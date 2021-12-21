@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<f:view transient="true">
+<h:head>
+    <title>Your e-mail address is not confirmed</title>
+    <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+    <h:outputStylesheet library="css" name="form-page.css?#{listsController.creationDate}"/>
+</h:head>
+<h:body>
+    <p:outputPanel>
+        <div class="ui-g">
+            <div class="ui-g-2"></div>
+            <div class="ui-g-7">
+                <h3>Your e-mail address is not confirmed</h3>
+                <div>
+                    To confirm your e-mail address, check your mailbox for the confirmation link, which you
+                    received after registration. Alternatively, you can request new confirmation e-mail.
+                </div>
+                <h:form>
+                    <p:messages id="messages" globalOnly="true"/>
+                    <p:panelGrid columns="3" layout="grid"
+                                 columnClasses="p-col-3 p-md-3 p-xl-3, p-col-5 p-md-5 p-xl-5, p-col-4 p-md-4 p-xl-4"
+                                 styleClass="customPanelGrid">
+                        <p:row>
+                            <p:column styleClass="p-col-12 p-md-12 p-xl-12">
+                                <p:captcha label="Captcha" validatorMessage="captcha test must be passed"/>
+                                <p:message for="@previous"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column styleClass="p-col-6 p-md-6 p-xl-6">
+                                <p:commandButton ajax="false" validateClient="true" value="Request new confirmation e-mail" update="@form" styleClass="p-mr-2"
+                                                 style="width: auto" action="#{requestNewConfirmationBacking.request}"/>
+                            </p:column>
+                            <p:column styleClass="p-col-6 p-md-6 p-xl-6">
+
+                                <p:commandButton ajax="false" immediate="true" value="Go to login page" action="#{logoutBacking.handleLogout}"/>
+                            </p:column>
+
+                        </p:row>
+                    </p:panelGrid>
+                </h:form>
+            </div>
+        </div>
+    </p:outputPanel>
+</h:body>
+</f:view>
+</html>

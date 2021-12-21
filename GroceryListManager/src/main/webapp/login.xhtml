@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<f:view transient="true">
+<h:head>
+    <title>Login to Grocery List Manager</title>
+    <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css" />
+    <h:outputStylesheet library="css" name="form-page.css?#{listsController.creationDate}"/>
+</h:head>
+<h:body>
+        <div class="ui-g">
+            <div class="ui-g-4"></div>
+            <div class="ui-g-4">
+                <h3>Login to Grocery List Manager</h3>
+                <h:form>
+                    <div class="ui-g-12">
+                        <p:messages id="messages" globalOnly="true" showIcon="false"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <div class="ui-g-5">
+                            <p:outputLabel styleClass="ui-g-12" for="textLogin" value="User name"/>
+                        </div>
+                        <div class="ui-g-7">
+                            <p:inputText styleClass="ui-g-12" id="textLogin" value="#{loginBacking.username}"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <div class="ui-g-5">
+                            <p:outputLabel styleClass="ui-g-12" for="textPassword" value="Password"/>
+                        </div>
+                        <div class="ui-g-7">
+                            <p:password styleClass="ui-g-12" id="textPassword" value="#{loginBacking.password}"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:commandLink styleClass="ui-g-7 ui-g-offset-5" value="Forgot your password?" action="/request-password-reset.xhtml" />
+                    </div>
+                            <div class="p-col-12 p-md-12 p-xl-12">
+                                <p:commandButton id="btnSignup" ajax="false" value="Sign up" styleClass="p-mr-2 ui-button-outlined"
+                                                 style="width: auto" action="register"/>
+                                <p:commandButton id="btnSignin" ajax="false" value="Sign in" update="@form" styleClass="p-mr-2"
+                                                 style="width: auto" action="#{loginBacking.handleLogin}"/>
+                                <p:defaultCommand target="btnSignin"/>
+                            </div>
+                </h:form>
+            </div>
+        </div>
+</h:body>
+</f:view>
+</html>

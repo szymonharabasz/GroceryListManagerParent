@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans&family=Work+Sans&display=swap');
+
+.ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell {
+    text-align: center;
+}
+
+.customPanelGrid .ui-panelgrid-content {
+    align-items: center;
+}
+
+body {
+    font-family: "Work Sans", sans-serif;
+}
+
+h3 {
+    font-family: "PT Sans", sans-serif;
+}

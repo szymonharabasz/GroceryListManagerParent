@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+<f:metadata>
+    <f:event type="preRenderView" listener="#{listsController.checkConfirmed}"/>
+    <f:event type="preRenderView" listener="#{listsController.fetchLists}"/>
+</f:metadata>
+<h:head>
+    <title>Grocery List Manager</title>
+    <h:outputStylesheet library="css" name="index.css?#{listsController.creationDate}"/>
+</h:head>
+<h:body>
+    <div class="ui-g">
+        <div class="ui-g-8">
+                <h4>
+                    <p:outputLabel value="Hello, #{request.userPrincipal.name}"/>
+                </h4>
+        </div>
+        <h:form styleClass="ui-g-4" style="align-items: center">
+            <p:commandButton ajax="false" action="#{logoutBacking.handleLogout}" value="Logout" style="float: right"/>
+        </h:form>
+    </div>
+<!--    <p:outputPanel>-->
+        <div class="ui-g">
+            <div class="ui-g-2"></div>
+            <div class="ui-g-8">
+                <p:dataView value="#{listsController.lists}" var="list" varStatus="status" layout="list">
+                    <p:dataViewListItem>
+                        <h:form>
+                            <div class="ui-g-12" style="font-weight: bold; background-color: whitesmoke">
+                                <div class="ui-g-2">
+                                    <h:outputText id="outName#{list.id}" rendered="#{!list.edited}"
+                                                  value="#{list.name}"/>
+                                    <p:inputText styleClass="ui-g-12" label="inName#{list.id}" id="inName#{list.id}"
+                                                 rendered="#{list.edited}"
+                                                 value="#{list.name}"/>
+                                </div>
+                                <div class="ui-g-6">
+                                    <h:outputText id="outDesc#{list.id}" rendered="#{!list.edited}"
+                                                  value="#{list.description}"/>
+                                    <p:inputText styleClass="ui-g-12" label="inDesc#{list.id}" id="inDesc#{list.id}"
+                                                 rendered="#{list.edited}"
+                                                 value="#{list.description}"/>
+                                </div>
+                                <div class="ui-g-4" style="text-align: right">
+                                    <p:commandLink rendered="#{!list.expanded}" value="Expand">
+                                        <p:ajax event="click" listener="#{listsController.expand(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandLink>
+                                    <p:commandLink rendered="#{list.expanded}" value="Collapse">
+                                        <p:ajax event="click" listener="#{listsController.collapse(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandLink>
+                                    <p:commandLink rendered="#{!list.edited}" value="Edit #{status.index}"
+                                                   label="btnEdit#{list.id}">
+                                        <p:ajax event="click" listener="#{listsController.editList(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandLink>
+                                    <p:commandLink rendered="#{list.edited}" value="Save">
+                                        <p:ajax event="click" listener="#{listsController.saveList(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandLink>
+                                    <p:commandLink value="Delete">
+                                        <p:ajax event="click" listener="#{listsController.removeList(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                            <div>
+                                <p:dataView value="#{list.items}" var="item" rendered="#{list.expanded}">
+                                    <p:dataViewListItem>
+                                        <div class="ui-g-12">
+                                            <div class="ui-g-1">
+                                                <p:selectBooleanCheckbox value="#{item.done}">
+                                                    <p:ajax listener="#{listsController.toggleDone(item.id, list.id)}"
+                                                            process="@all" update="@all"/>
+                                                </p:selectBooleanCheckbox>
+                                            </div>
+                                            <div class="ui-g-5">
+                                                <h:outputText value="#{item.name}" rendered="#{!item.edited}"/>
+                                                <p:inputText styleClass="ui-g-12" value="#{item.name}" rendered="#{item.edited}"/>
+                                            </div>
+                                            <div class="ui-g-1">
+                                                <h:outputText value="#{item.quantity}" rendered="#{!item.edited}"/>
+                                                <p:inputText styleClass="ui-g-12" value="#{item.quantity}" rendered="#{item.edited}"/>
+                                            </div>
+                                            <div class="ui-g-1">
+                                                <h:outputText value="#{item.unit}" rendered="#{!item.edited}"/>
+                                                <p:inputText styleClass="ui-g-12" value="#{item.unit}" rendered="#{item.edited}"/>
+                                            </div>
+                                            <div class="ui-g-3 ui-g-offset-1" style="text-align: right">
+                                                <p:commandLink rendered="#{!item.edited}" value="Edit">
+                                                    <p:ajax event="click"
+                                                            listener="#{listsController.editItem(item.id)}"
+                                                            process="@all" update="@all"/>
+                                                </p:commandLink>
+                                                <p:commandLink rendered="#{item.edited}" value="Save">
+                                                    <p:ajax event="click"
+                                                            listener="#{listsController.saveItem(item.id, list.id)}"
+                                                            process="@all" update="@all"/>
+                                                </p:commandLink>
+                                                <p:commandLink value="Delete">
+                                                    <p:ajax event="click"
+                                                            listener="#{listsController.removeItem(item.id)}"
+                                                            process="@all" update="@all"/>
+                                                </p:commandLink>
+                                            </div>
+                                        </div>
+                                    </p:dataViewListItem>
+                                </p:dataView>
+                                <p:commandLink value="Add new item" rendered="#{list.expanded}">
+                                    <p:ajax event="click" listener="#{listsController.addItem(list.id)}" process="@all"
+                                            update="@all"/>
+                                </p:commandLink>
+                            </div>
+                        </h:form>
+                    </p:dataViewListItem>
+                </p:dataView>
+                <div class="ui-g-12">
+                    <h:form>
+                    <p:commandLink value="Add new list">
+                        <p:ajax event="click" listener="#{listsController.addList}" process="@all" update="@all"/>
+                    </p:commandLink>
+                </h:form>
+            </div>
+            </div>
+        </div>
+<!--    </p:outputPanel>-->
+</h:body>
+</html>
