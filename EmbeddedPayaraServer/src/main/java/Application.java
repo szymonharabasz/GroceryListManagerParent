@@ -29,12 +29,6 @@ public class Application {
             System.setProperty(keyVal[0], keyVal[1]);
             System.err.println("PROPERTY SET " + keyVal[0] + " : " + keyVal[1]);
         }
-            /*
-            System.setProperty("TEST_VARIABLE","hello");
-            System.setProperty("PUBLIC_CAPTCHA_KEY","6LdVDWUdAAAAAGI3BwhWi6lZHGjyWQnTdDEJ044s");
-            System.setProperty("PRIVATE_CAPTCHA_KEY","6LdVDWUdAAAAAP60RBJ3xTsm2-h5fa0btmzZk9Ib");
-            System.setProperty("EMAIL_PASSWORD","SmP_2005_glm");
-*/
         System.setProperty("myprop", "dupa");
         glassfish.start();
         glassfish.getDeployer().deploy(app);
