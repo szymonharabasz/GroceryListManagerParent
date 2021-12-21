@@ -16,7 +16,6 @@ public class Application {
             GlassFish glassfish = runtime.newGlassFish(glassfishProperties);
             glassfish.start();
             glassfish.getDeployer().deploy(
-//                    Application.class.getResourceAsStream("/GroceryListManager-1.0-SNAPSHOT.war"));
                    new File("GroceryListManager-1.0-SNAPSHOT.war"));
         }
         catch (GlassFishException ex)
