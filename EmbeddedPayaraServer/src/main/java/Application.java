@@ -18,8 +18,7 @@ public class Application {
             glassfish.getDeployer().deploy(
                    new File("GroceryListManager-1.0-SNAPSHOT.war"));
         }
-        catch (GlassFishException ex)
-        {
+        catch (GlassFishException ex) {
             Logger.getLogger(Application.class.getName()).log(Level.SEVERE,
                     null, ex);
         }

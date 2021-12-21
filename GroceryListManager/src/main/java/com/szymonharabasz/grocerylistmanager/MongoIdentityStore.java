@@ -41,4 +41,5 @@ public class MongoIdentityStore implements IdentityStore {
         System.err.println("Credentials validation result " + credentialValidationResult.getStatus());
         return credentialValidationResult;
     }
+
 }
