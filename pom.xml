@@ -235,16 +235,35 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <executable>./copyStuff.sh</executable>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>com.heroku.sdk</groupId>
                     <artifactId>heroku-maven-plugin</artifactId>
                     <version>3.0.3</version>
+                    <inherited>false</inherited>
                     <configuration>
                         <appName>szymons-grocery-list-manager</appName>
                         <processTypes>
-                            <web>
-                                java -jar target/EmbeddedPayaraServer-1.0-SNAPSHOT-jar-with-dependencies.jar
-                            </web>
+                            <web>java -cp "target/*:target/dependency/*" -Dserver.port=$PORT Application GroceryListManager-1.0.1-SNAPSHOT.war</web>
                         </processTypes>
+                        <includes>
+                            <include>system-properties</include>
+<!--                            <include>domain1</include>-->
+                            <include>GroceryListManager-1.0.1-SNAPSHOT.war</include>
+                        </includes>
                     </configuration>
                 </plugin>
             </plugins>

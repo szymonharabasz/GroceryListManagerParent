@@ -1,1 +1,1 @@
-web: java -cp "EmbeddedPayaraServer/target/*:EmbeddedPayaraServer/target/dependency/*" Application GroceryListManager/target/GroceryListManager-1.0.1-SNAPSHOT.war 
+web: java -cp "target/*:target/dependency/*" -Dserver.port=$PORT Application GroceryListManager-1.0.1-SNAPSHOT.war

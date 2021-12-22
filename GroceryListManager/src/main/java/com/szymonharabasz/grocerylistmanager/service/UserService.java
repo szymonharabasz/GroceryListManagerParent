@@ -35,7 +35,10 @@ public class UserService {
         return repository.findByName(name);
     }
 
-    public Optional<User> findByConfirmationToken(String token) { return repository.findByConfirmationToken(token); }
+    public Optional<User> findByConfirmationToken(String token) {
+        //return repository.findByConfirmationToken(token);
+        return findBy("confirmationToken._id", token);
+    }
 
     public Optional<User> findByEmail(String email) { return repository.findByEmail(email); }
 

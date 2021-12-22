@@ -10,8 +10,9 @@ public class Application {
         GlassFishRuntime runtime = GlassFishRuntime.bootstrap(bootstrap);
         GlassFishProperties glassfishProperties = new GlassFishProperties();
         // glassfishProperties.setPort("http-listener", 8083);
-        //    glassfishProperties.setPort("https-listener", 8184);
-        glassfishProperties.setInstanceRoot("./domain1");
+//        glassfishProperties.setInstanceRoot("./domain1");
+        System.out.println("Setting http-listener posrt to " + Integer.valueOf(System.getProperty("server.port")));
+        glassfishProperties.setPort("http-listener", Integer.valueOf(System.getProperty("server.port")));
         glassfishProperties.setProperty("TEST_VARIABLE", "welcome");
         GlassFish glassfish = runtime.newGlassFish(glassfishProperties);
         if (args.length < 1) {
@@ -21,15 +22,13 @@ public class Application {
         if (!app.exists()) {
             throw new GlassFishException("Could not find artifact to deploy");
         }
-        BufferedReader reader = new BufferedReader(new FileReader("./system-properties"));
-        String line = reader.readLine();
-        reader.close();
-        for (String prop : line.split(":")) {
-            String[] keyVal = prop.split("=");
-            System.setProperty(keyVal[0], keyVal[1]);
-            System.err.println("PROPERTY SET " + keyVal[0] + " : " + keyVal[1]);
-        }
         System.setProperty("myprop", "dupa");
+        System.setProperty("HOST", System.getenv("HOST"));
+        System.setProperty("MONGO_HOST", System.getenv("MONGO_HOST"));
+        System.setProperty("TEST_VARIABLE", System.getenv("TEST_VARIABLE"));
+        System.setProperty("PUBLIC_CAPTCHA_KEY", System.getenv("PUBLIC_CAPTCHA_KEY"));
+        System.setProperty("PRIVATE_CAPTCHA_KEY", System.getenv("PRIVATE_CAPTCHA_KEY"));
+        System.setProperty("EMAIL_PASSWORD", System.getenv("EMAIL_PASSWORD"));
         glassfish.start();
         glassfish.getDeployer().deploy(app);
 

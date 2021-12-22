@@ -31,7 +31,7 @@ public class MailService {
 
         String contextPath = servletContext.getContextPath();
         // TODO: change to real domain
-        String webserver = "https://localhost:8181";
+        String webserver = System.getProperty("HOST");
         String confirmationToken = user.getConfirmationToken().getPayload();
         String link = webserver + contextPath + "/confirm.xhtml?token=" + confirmationToken;
 
@@ -62,7 +62,7 @@ public class MailService {
 
         String contextPath = servletContext.getContextPath();
         // TODO: change to real domain
-        String webserver = "https://localhost:8181";
+        String webserver = System.getProperty("HOST");
         String link = webserver + contextPath + "/reset-password.xhtml?user=" + userTokenWrapper.getUser().getName() +
                 "&token=" + userTokenWrapper.getToken();
 
