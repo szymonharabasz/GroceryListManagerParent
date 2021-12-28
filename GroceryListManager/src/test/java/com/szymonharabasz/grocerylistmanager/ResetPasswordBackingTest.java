@@ -49,7 +49,7 @@ public class ResetPasswordBackingTest {
 
     @Test
     @DisplayName("Reset password saves user with a new password")
-    void resetPasswordSavesUser() throws IOException {
+    public void resetPasswordSavesUser() throws IOException {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.of(salt));
@@ -71,7 +71,7 @@ public class ResetPasswordBackingTest {
 
     @Test
     @DisplayName("Shows error if user is not found")
-    void showErrorUserNotFound() throws IOException {
+    public void showErrorUserNotFound() throws IOException {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.empty());
         when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
@@ -86,7 +86,7 @@ public class ResetPasswordBackingTest {
 
     @Test
     @DisplayName("Shows error if salt is not found")
-    void showErrorSaltNotFound() throws IOException {
+    public void showErrorSaltNotFound() throws IOException {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.of(salt));
@@ -103,7 +103,7 @@ public class ResetPasswordBackingTest {
 
     @Test
     @DisplayName("Shows error if token hash is wrong")
-    void showErrorWrongTokenHash() throws IOException {
+    public void showErrorWrongTokenHash() throws IOException {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.empty());

@@ -60,16 +60,17 @@ public class RequestPasswordResetBacking {
                 user.setPasswordResetTokenHash(new ExpirablePayload(passwordResetTokenHash, expiresAt));
                 userService.save(user);
                 event.fireAsync(new UserTokenWrapper(user, passwordResetToken));
-                try {
-                    externalContext.redirect(externalContext.getRequestContextPath() +
-                            "/message.xhtml?type=password-reset-requested");
-                } catch (IOException e) {
-                    facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "An error has occured when redirecting to the confirmation page.", null));
 
-                }
             })
         );
+        try {
+            externalContext.redirect(externalContext.getRequestContextPath() +
+                    "/message.xhtml?type=password-reset-requested");
+        } catch (IOException e) {
+            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "An error has occured when redirecting to the confirmation page.", null));
+
+        }
     }
 
 }
