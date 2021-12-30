@@ -7,6 +7,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 @Named
 @RequestScoped
@@ -30,7 +31,7 @@ public class MessageBacking {
     public void load() {
         if (Objects.equals(type, "email-sent")) {
             facesContext.addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Check your e-mail",
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts").getString("email-sent.summary"),
                             "An e-mail has been sent to the address you provided in the registration. " +
                                     "Check your mailbox and click the confirmation link to activate your account."));
             title = "Confirmation e-mail sent";
