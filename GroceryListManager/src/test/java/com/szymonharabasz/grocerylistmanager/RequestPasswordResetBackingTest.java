@@ -4,6 +4,7 @@ import com.szymonharabasz.grocerylistmanager.domain.ExpirablePayload;
 import com.szymonharabasz.grocerylistmanager.domain.Salt;
 import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.service.HashingService;
+import com.szymonharabasz.grocerylistmanager.service.RandomService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 import com.szymonharabasz.grocerylistmanager.service.UserTokenWrapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +23,14 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RequestPasswordResetBackingTest {
+    @Mock
+    RandomService randomService;
     @Mock
     UserService mockUserService;
     @Mock
@@ -40,6 +44,8 @@ public class RequestPasswordResetBackingTest {
 
     final String userId = "123";
     final String userName = "name";
+    final String token = "token";
+    final String tokenHash = "tokenHash";
     final byte[] saltBytes = "foobar".getBytes();
     User user;
     Salt salt;
@@ -57,7 +63,7 @@ public class RequestPasswordResetBackingTest {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                mockFacesContext,
+                randomService,
                 mockUserService,
                 mockHashingService,
                 mockEvent
@@ -75,7 +81,7 @@ public class RequestPasswordResetBackingTest {
         when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.empty());
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                mockFacesContext,
+                randomService,
                 mockUserService,
                 mockHashingService,
                 mockEvent
@@ -90,9 +96,11 @@ public class RequestPasswordResetBackingTest {
     void savePasswordResetInformationIfAllCorrect() {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.of(salt));
+        when(mockHashingService.createHash(token, salt)).thenReturn(tokenHash);
+        when(randomService.getAlphanumeric(32)).thenReturn(token);
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                mockFacesContext,
+                randomService,
                 mockUserService,
                 mockHashingService,
                 mockEvent
@@ -101,6 +109,8 @@ public class RequestPasswordResetBackingTest {
         requestPasswordResetBacking.request();
 
         verify(mockUserService).save(user);
+        verify(mockEvent).fireAsync(new UserTokenWrapper(user, token));
+        assertEquals(user.getPasswordResetTokenHash().getPayload(), tokenHash);
 
     }
 

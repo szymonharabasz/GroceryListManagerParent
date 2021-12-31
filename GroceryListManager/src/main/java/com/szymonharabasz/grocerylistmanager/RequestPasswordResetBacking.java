@@ -4,6 +4,7 @@ import com.szymonharabasz.grocerylistmanager.domain.ExpirablePayload;
 import com.szymonharabasz.grocerylistmanager.domain.Salt;
 import com.szymonharabasz.grocerylistmanager.interceptors.RedirectToConfirmation;
 import com.szymonharabasz.grocerylistmanager.service.HashingService;
+import com.szymonharabasz.grocerylistmanager.service.RandomService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 import com.szymonharabasz.grocerylistmanager.service.UserTokenWrapper;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -26,8 +27,7 @@ import java.util.ResourceBundle;
 @RequestScoped
 public class RequestPasswordResetBacking {
 
-    private final FacesContext facesContext;
-    private final ExternalContext externalContext;
+    private final RandomService randomService;
     private final UserService userService;
     private final HashingService hashingService;
     private final Event<UserTokenWrapper> event;
@@ -37,10 +37,9 @@ public class RequestPasswordResetBacking {
 
     @Inject
     public RequestPasswordResetBacking(
-            FacesContext facesContext,
+            RandomService randomService,
             UserService userService, HashingService hashingService, Event<UserTokenWrapper> event) {
-        this.facesContext = facesContext;
-        this.externalContext = facesContext.getExternalContext();
+        this.randomService = randomService;
         this.userService = userService;
         this.hashingService = hashingService;
         this.event = event;
@@ -58,8 +57,8 @@ public class RequestPasswordResetBacking {
     public void request() {
         userService.findByEmail(email).ifPresent(user -> {
             Salt salt = hashingService.findSaltByUserId(user.getId()).orElseThrow(IllegalStateException::new);
-            String passwordResetToken = RandomStringUtils.randomAlphanumeric(32);
-            String passwordResetTokenHash = hashingService.createHash(passwordResetToken, salt.getSalt());
+            String passwordResetToken = randomService.getAlphanumeric(32);
+            String passwordResetTokenHash = hashingService.createHash(passwordResetToken, salt);
             Date expiresAt = Date.from(Instant.now().plus(Duration.ofMinutes(30)));
             user.setPasswordResetTokenHash(new ExpirablePayload(passwordResetTokenHash, expiresAt));
             userService.save(user);
