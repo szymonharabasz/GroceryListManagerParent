@@ -3,6 +3,7 @@ package com.szymonharabasz.grocerylistmanager;
 import com.szymonharabasz.grocerylistmanager.domain.ExpirablePayload;
 import com.szymonharabasz.grocerylistmanager.domain.Salt;
 import com.szymonharabasz.grocerylistmanager.domain.User;
+import com.szymonharabasz.grocerylistmanager.interceptors.RedirectToConfirmation;
 import com.szymonharabasz.grocerylistmanager.service.MailService;
 import com.szymonharabasz.grocerylistmanager.service.HashingService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
@@ -93,6 +94,7 @@ public class RegisterBacking {
         this.email = email;
     }
 
+    @RedirectToConfirmation(type = "email-sent")
     public void register() {
         Salt salt = new Salt(Utils.generateID(), HashingService.createSalt());
         hashingService.save(salt);
@@ -101,11 +103,5 @@ public class RegisterBacking {
         user.setConfirmationToken(new ExpirablePayload(RandomStringUtils.randomAlphanumeric(32), expiresAt));
         userService.save(user);
         userRegistrationEvent.fireAsync(user);
-        try {
-            externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=email-sent");
-        } catch (IOException e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
-                            .getString("generic-error-message"), null));}
     }
 }

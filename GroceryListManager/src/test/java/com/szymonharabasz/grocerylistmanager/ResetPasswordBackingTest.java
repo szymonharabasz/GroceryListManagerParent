@@ -21,8 +21,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ResetPasswordBackingTest {
@@ -33,8 +32,6 @@ public class ResetPasswordBackingTest {
     HashingService mockHashingService;
     @Mock
     FacesContext mockFacesContext;
-    @Mock
-    ExternalContext mockExternalContext;
 
     String userId = "123";
     String userName = "name";
@@ -49,12 +46,10 @@ public class ResetPasswordBackingTest {
 
     @Test
     @DisplayName("Reset password saves user with a new password")
-    public void resetPasswordSavesUser() throws IOException {
+    public void resetPasswordSavesUser() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.of(salt));
-        when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
-        when(mockExternalContext.getRequestContextPath()).thenReturn("contextpath");
 
         ResetPasswordBacking resetPasswordBacking = new ResetPasswordBacking(mockUserService, mockHashingService, mockFacesContext);
         resetPasswordBacking.setUserName(userName);
@@ -66,56 +61,49 @@ public class ResetPasswordBackingTest {
 
         assertEquals(user.getPasswordHash(), HashingService.createHash(newPassword, salt));
         verify(mockUserService).save(user);
-        verify(mockExternalContext).redirect("contextpath/message.xhtml?type=password-changed");
     }
 
     @Test
-    @DisplayName("Shows error if user is not found")
-    public void showErrorUserNotFound() throws IOException {
+    @DisplayName("Does not change state if user is not found")
+    public void doesNotChangeStateIfUserNotFound() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.empty());
-        when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
-        when(mockExternalContext.getRequestContextPath()).thenReturn("contextpath");
 
         ResetPasswordBacking resetPasswordBacking = new ResetPasswordBacking(mockUserService, mockHashingService, mockFacesContext);
         resetPasswordBacking.setUserName(userName);
         resetPasswordBacking.load();
 
-        verify(mockExternalContext).redirect("contextpath/message.xhtml?type=wrong-token");
+        verifyNoMoreInteractions(mockUserService);
     }
 
     @Test
-    @DisplayName("Shows error if salt is not found")
-    public void showErrorSaltNotFound() throws IOException {
+    @DisplayName("Does not change state if salt is not found")
+    public void doesNotChangeStatifnSaltNotFound() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.of(salt));
-        when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
-        when(mockExternalContext.getRequestContextPath()).thenReturn("contextpath");
 
         ResetPasswordBacking resetPasswordBacking = new ResetPasswordBacking(mockUserService, mockHashingService, mockFacesContext);
         resetPasswordBacking.setUserName(userName);
         resetPasswordBacking.setToken("wrong");
         resetPasswordBacking.load();
 
-        verify(mockExternalContext).redirect("contextpath/message.xhtml?type=wrong-token");
+        verifyNoMoreInteractions(mockUserService);
     }
 
     @Test
-    @DisplayName("Shows error if token hash is wrong")
-    public void showErrorWrongTokenHash() throws IOException {
+    @DisplayName("Does not change state if token hash is wrong")
+    public void doesNotChangeStateOnWrongTokenHash() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.empty());
-        when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
-        when(mockExternalContext.getRequestContextPath()).thenReturn("contextpath");
 
         ResetPasswordBacking resetPasswordBacking = new ResetPasswordBacking(mockUserService, mockHashingService, mockFacesContext);
         resetPasswordBacking.setUserName(userName);
 
         resetPasswordBacking.load();
 
-        verify(mockExternalContext).redirect("contextpath/message.xhtml?type=wrong-token");
+        verifyNoMoreInteractions(mockUserService);
     }
 
 }

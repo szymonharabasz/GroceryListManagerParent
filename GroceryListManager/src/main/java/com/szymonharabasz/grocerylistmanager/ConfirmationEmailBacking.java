@@ -1,6 +1,7 @@
 package com.szymonharabasz.grocerylistmanager;
 
 import com.szymonharabasz.grocerylistmanager.domain.User;
+import com.szymonharabasz.grocerylistmanager.interceptors.RedirectToConfirmation;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 
 import javax.enterprise.context.RequestScoped;
@@ -40,16 +41,11 @@ public class ConfirmationEmailBacking {
                             "Your e-mail addeess has been successfully confirmed. You can now sign in to " +
                                     "your account"));
         });
-        if (!user.isPresent()) {
-            try {
-                externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=wrong-token");
-            } catch (IOException e) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
-                                .getString("generic-error-message"), null));
-            }
-        }
+        if (!user.isPresent()) { showError(); }
     }
+
+    @RedirectToConfirmation(type = "wrong-token")
+    private void showError() {  }
 
     public String getToken() {
         return token;

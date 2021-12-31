@@ -18,7 +18,7 @@ public class RedirectToConfirmationInterceptor {
         Object result = context.proceed();
         RedirectToConfirmation redirectToConfirmation = context.getMethod().getAnnotation(RedirectToConfirmation.class);
         String type = redirectToConfirmation.type();
-        System.err.println("!!!!!!!!!!!!!!!! INTERCEPTOR IS CALLED FOR TYPE " + type + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.err.println("Redirect interceptor called for " + type);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         try {

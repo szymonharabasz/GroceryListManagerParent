@@ -2,9 +2,11 @@ package com.szymonharabasz.grocerylistmanager;
 
 import com.szymonharabasz.grocerylistmanager.domain.Salt;
 import com.szymonharabasz.grocerylistmanager.domain.User;
+import com.szymonharabasz.grocerylistmanager.interceptors.RedirectToConfirmation;
 import com.szymonharabasz.grocerylistmanager.service.HashingService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -18,7 +20,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Named
-@SessionScoped
+@RequestScoped
 public class ResetPasswordBacking implements Serializable {
 
     private String userName;
@@ -60,31 +62,16 @@ public class ResetPasswordBacking implements Serializable {
         }
     }
 
+    @RedirectToConfirmation(type = "password-changed")
     public void resetPassword() {
         String newPasswordHash = HashingService.createHash(newPassword, salt);
         user.setPasswordHash(newPasswordHash);
         user.setPasswordResetTokenHash(null);
         userService.save(user);
-        showConfirmation();
     }
 
-    private void showConfirmation() {
-        try {
-            externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=password-changed");
-        } catch (IOException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
-                                    .getString("generic-error-message"), null));}
-    }
-
-    private void showError() {
-        try {
-            externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=wrong-token");
-        } catch (IOException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
-                                    .getString("generic-error-message"), null));}
-    }
+    @RedirectToConfirmation(type = "wrong-token")
+    public void showError() {  }
 
     public String getUserName() {
         return userName;

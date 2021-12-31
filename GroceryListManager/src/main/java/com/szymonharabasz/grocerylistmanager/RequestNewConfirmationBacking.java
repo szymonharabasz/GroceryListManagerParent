@@ -2,6 +2,7 @@ package com.szymonharabasz.grocerylistmanager;
 
 import com.szymonharabasz.grocerylistmanager.domain.ExpirablePayload;
 import com.szymonharabasz.grocerylistmanager.domain.User;
+import com.szymonharabasz.grocerylistmanager.interceptors.RedirectToConfirmation;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -38,18 +39,13 @@ public class RequestNewConfirmationBacking {
         this.userEvent = userEvent;
     }
 
+    @RedirectToConfirmation(type = "email-sent")
     public void request() {
         Date expiresAt = Date.from(Instant.now().plus(Duration.ofDays(2)));
         currenUser().ifPresent(user -> {
             user.setConfirmationToken(new ExpirablePayload(RandomStringUtils.randomAlphanumeric(32), expiresAt));
             userService.save(user);
             userEvent.fireAsync(user);
-            try {
-                externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=email-sent");
-            } catch (IOException e) {
-                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
-                                .getString("generic-error-message"), null));}
         });
     }
 
