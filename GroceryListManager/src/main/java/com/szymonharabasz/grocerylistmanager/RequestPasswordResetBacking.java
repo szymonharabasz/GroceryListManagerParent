@@ -1,6 +1,8 @@
 package com.szymonharabasz.grocerylistmanager;
 
 import com.szymonharabasz.grocerylistmanager.domain.ExpirablePayload;
+import com.szymonharabasz.grocerylistmanager.domain.Salt;
+import com.szymonharabasz.grocerylistmanager.interceptors.RedirectToConfirmation;
 import com.szymonharabasz.grocerylistmanager.service.HashingService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 import com.szymonharabasz.grocerylistmanager.service.UserTokenWrapper;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 @Named
 @RequestScoped
@@ -51,26 +54,17 @@ public class RequestPasswordResetBacking {
         this.email = email;
     }
 
+    @RedirectToConfirmation(type = "password-reset-requested")
     public void request() {
-        userService.findByEmail(email).ifPresent(user ->
-            hashingService.findSaltByUserId(user.getId()).ifPresent(salt -> {
-                String passwordResetToken = RandomStringUtils.randomAlphanumeric(32);
-                String passwordResetTokenHash = HashingService.createHash(passwordResetToken, salt.getSalt());
-                Date expiresAt = Date.from(Instant.now().plus(Duration.ofMinutes(30)));
-                user.setPasswordResetTokenHash(new ExpirablePayload(passwordResetTokenHash, expiresAt));
-                userService.save(user);
-                event.fireAsync(new UserTokenWrapper(user, passwordResetToken));
-
-            })
-        );
-        try {
-            externalContext.redirect(externalContext.getRequestContextPath() +
-                    "/message.xhtml?type=password-reset-requested");
-        } catch (IOException e) {
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "An error has occured when redirecting to the confirmation page.", null));
-
-        }
+        userService.findByEmail(email).ifPresent(user -> {
+            Salt salt = hashingService.findSaltByUserId(user.getId()).orElseThrow(IllegalStateException::new);
+            String passwordResetToken = RandomStringUtils.randomAlphanumeric(32);
+            String passwordResetTokenHash = HashingService.createHash(passwordResetToken, salt.getSalt());
+            Date expiresAt = Date.from(Instant.now().plus(Duration.ofMinutes(30)));
+            user.setPasswordResetTokenHash(new ExpirablePayload(passwordResetTokenHash, expiresAt));
+            userService.save(user);
+            event.fireAsync(new UserTokenWrapper(user, passwordResetToken));
+        });
     }
 
 }

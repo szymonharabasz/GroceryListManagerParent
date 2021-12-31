@@ -87,5 +87,9 @@
             <name>session</name>
         </cookie-config>
     </session-config>
+
+    <error-page>
+        <location>/internal-server-error.html</location>
+    </error-page>
     
 </web-app>

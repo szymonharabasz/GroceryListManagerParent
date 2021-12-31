@@ -16,6 +16,7 @@ import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 @Named
 @RequestScoped
@@ -86,7 +87,7 @@ public class LoginBacking {
             externalContext.redirect(externalContext.getRequestContextPath() + to);
         } catch (IOException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "An error has occured.", null));
-        }
+                    ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
+                            .getString("generic-error-message"), null));        }
     }
 }

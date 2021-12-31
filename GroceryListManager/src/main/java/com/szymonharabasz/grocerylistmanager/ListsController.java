@@ -204,7 +204,8 @@ public class ListsController implements Serializable {
             externalContext.redirect(externalContext.getRequestContextPath() + to);
         } catch (IOException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "An error has occured.", null));
+                    ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
+                            .getString("generic-error-message"), null));
         }
     }
 }

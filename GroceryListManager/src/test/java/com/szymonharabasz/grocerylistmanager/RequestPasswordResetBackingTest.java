@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,12 +52,11 @@ public class RequestPasswordResetBackingTest {
 
     @Test
     @DisplayName("Does not change app state if non-existing e-mail is prrovided")
-    void doNothingOnWronngEmail() {
+    void dontChangeStateOnWronngEmail() {
         final String email = "user@example.com";
 
         when(mockUserService.findByEmail(email)).thenReturn(Optional.empty());
         when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
-        when(mockExternalContext.getRequestContextPath()).thenReturn("contextpath");
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
                 mockFacesContext,
@@ -72,31 +72,11 @@ public class RequestPasswordResetBackingTest {
     }
 
     @Test
-    @DisplayName("Redirects to the confirmation page when non-existing email is provided")
-    void redirectOnWronngEmail() throws IOException {
-        final String email = "user@example.com";
-
-        when(mockUserService.findByEmail(email)).thenReturn(Optional.empty());
-        when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
-        when(mockExternalContext.getRequestContextPath()).thenReturn("contextpath");
-
-        RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                mockFacesContext,
-                mockUserService,
-                mockHashingService,
-                mockEvent
-        );
-        requestPasswordResetBacking.setEmail(email);
-        requestPasswordResetBacking.request();
-        verify(mockExternalContext).redirect("contextpath/message.xhtml?type=password-reset-requested");
-    }
-
-    @Test
-    @DisplayName("Redirects to the confirmation page when non-existing email is provided")
-    void redirectOnGoodEmail() throws IOException {
+    @DisplayName("Throws IllegalStateException when good email is provided, but salt was not found")
+    void throwOnGoodEmailButBadSalt() {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.empty());
         when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
-        when(mockExternalContext.getRequestContextPath()).thenReturn("contextpath");
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
                 mockFacesContext,
@@ -105,7 +85,8 @@ public class RequestPasswordResetBackingTest {
                 mockEvent
         );
         requestPasswordResetBacking.setEmail(user.getEmail());
-        requestPasswordResetBacking.request();
-        verify(mockExternalContext).redirect("contextpath/message.xhtml?type=password-reset-requested");
+        assertThrows(IllegalStateException.class, requestPasswordResetBacking::request);
+
     }
+
 }

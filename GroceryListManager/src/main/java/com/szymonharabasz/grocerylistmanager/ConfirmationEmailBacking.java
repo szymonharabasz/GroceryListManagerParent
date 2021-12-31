@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 @Named
 @RequestScoped
@@ -44,7 +45,8 @@ public class ConfirmationEmailBacking {
                 externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=wrong-token");
             } catch (IOException e) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "An error has occured.", null));
+                        ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
+                                .getString("generic-error-message"), null));
             }
         }
     }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 @Named
 @SessionScoped
@@ -72,8 +73,8 @@ public class ResetPasswordBacking implements Serializable {
             externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=password-changed");
         } catch (IOException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "An error has occured.", null));
-        }
+                            ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
+                                    .getString("generic-error-message"), null));}
     }
 
     private void showError() {
@@ -81,8 +82,8 @@ public class ResetPasswordBacking implements Serializable {
             externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=wrong-token");
         } catch (IOException e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "An error has occured.", null));
-        }
+                            ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
+                                    .getString("generic-error-message"), null));}
     }
 
     public String getUserName() {

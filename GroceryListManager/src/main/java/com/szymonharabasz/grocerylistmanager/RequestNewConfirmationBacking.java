@@ -18,6 +18,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 @Named
 public class RequestNewConfirmationBacking {
@@ -46,9 +47,9 @@ public class RequestNewConfirmationBacking {
             try {
                 externalContext.redirect(externalContext.getRequestContextPath() + "/message.xhtml?type=email-sent");
             } catch (IOException e) {
-                facesContext.addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "An error has occured.", null));
-            }
+                facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
+                                .getString("generic-error-message"), null));}
         });
     }
 
