@@ -96,9 +96,9 @@ public class RegisterBacking {
 
     @RedirectToConfirmation(type = "email-sent")
     public void register() {
-        Salt salt = new Salt(Utils.generateID(), HashingService.createSalt());
+        Salt salt = new Salt(Utils.generateID(), hashingService.createSalt());
         hashingService.save(salt);
-        User user = new User(salt.getUserId(), username, HashingService.createHash(password, salt), email);
+        User user = new User(salt.getUserId(), username, hashingService.createHash(password, salt), email);
         Date expiresAt = Date.from(Instant.now().plus(Duration.ofDays(2)));
         user.setConfirmationToken(new ExpirablePayload(RandomStringUtils.randomAlphanumeric(32), expiresAt));
         userService.save(user);

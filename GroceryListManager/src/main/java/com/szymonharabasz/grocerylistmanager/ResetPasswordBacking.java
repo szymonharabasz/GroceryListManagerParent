@@ -45,7 +45,7 @@ public class ResetPasswordBacking implements Serializable {
         maybeUser.ifPresent(usr -> {
             this.salt = hashingService.findSaltByUserId(usr.getId()).orElseThrow(IllegalStateException::new);
             this.user = usr;
-            String tokenHash = HashingService.createHash(token, salt);
+            String tokenHash = hashingService.createHash(token, salt);
             if (!Objects.equals(tokenHash, user.getPasswordResetTokenHash().getPayload())) {
                 showError();
             }
@@ -58,7 +58,7 @@ public class ResetPasswordBacking implements Serializable {
 
     @RedirectToConfirmation(type = "password-changed")
     public void resetPassword() {
-        String newPasswordHash = HashingService.createHash(newPassword, salt);
+        String newPasswordHash = hashingService.createHash(newPassword, salt);
         user.setPasswordHash(newPasswordHash);
         user.setPasswordResetTokenHash(null);
         userService.save(user);

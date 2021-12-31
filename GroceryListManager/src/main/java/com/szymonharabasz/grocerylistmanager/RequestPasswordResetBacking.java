@@ -59,7 +59,7 @@ public class RequestPasswordResetBacking {
         userService.findByEmail(email).ifPresent(user -> {
             Salt salt = hashingService.findSaltByUserId(user.getId()).orElseThrow(IllegalStateException::new);
             String passwordResetToken = RandomStringUtils.randomAlphanumeric(32);
-            String passwordResetTokenHash = HashingService.createHash(passwordResetToken, salt.getSalt());
+            String passwordResetTokenHash = hashingService.createHash(passwordResetToken, salt.getSalt());
             Date expiresAt = Date.from(Instant.now().plus(Duration.ofMinutes(30)));
             user.setPasswordResetTokenHash(new ExpirablePayload(passwordResetTokenHash, expiresAt));
             userService.save(user);

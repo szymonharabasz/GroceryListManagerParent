@@ -41,10 +41,10 @@ public class Initializer {
         GroceryList list2 = new GroceryList(generateID(), "Rewe", "Shopping list for Rewe");
         listsService.saveList(list1);
         listsService.saveList(list2);
-        Salt salt = new Salt(generateID(), HashingService.createSalt());
+        Salt salt = new Salt(generateID(), hashingService.createSalt());
         hashingService.save(salt);
         User user1 = new User(salt.getUserId(), "Carl",
-                HashingService.createHash("pwd", salt), "carl@example.com");
+                hashingService.createHash("pwd", salt), "carl@example.com");
         user1.addListId(listId1);
         userService.save(user1);
         logger.severe("Loaded lists: " + listsService.getLists().toString());

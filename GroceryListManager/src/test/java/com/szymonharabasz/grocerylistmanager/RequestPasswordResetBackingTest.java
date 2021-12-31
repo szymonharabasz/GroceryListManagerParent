@@ -48,14 +48,13 @@ public class RequestPasswordResetBackingTest {
     void init() {
         this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
         this.salt = new Salt(userId, saltBytes);
-        user.setPasswordResetTokenHash(new ExpirablePayload(HashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
+        user.setPasswordResetTokenHash(new ExpirablePayload(mockHashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
     }
 
     @Test
     @DisplayName("Does not change app state if non-existing e-mail is prrovided")
     void dontChangeStateOnWronngEmail() {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.empty());
-        when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
                 mockFacesContext,
@@ -65,7 +64,6 @@ public class RequestPasswordResetBackingTest {
         );
         requestPasswordResetBacking.setEmail(user.getEmail());
         requestPasswordResetBacking.request();
-        verifyNoInteractions(mockHashingService);
         verifyNoInteractions(mockEvent);
         verifyNoMoreInteractions(mockUserService);
     }
@@ -75,7 +73,6 @@ public class RequestPasswordResetBackingTest {
     void throwOnGoodEmailButBadSalt() {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.empty());
-        when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
                 mockFacesContext,

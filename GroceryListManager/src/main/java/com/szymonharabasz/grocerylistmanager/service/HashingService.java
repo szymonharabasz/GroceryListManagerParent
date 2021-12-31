@@ -19,34 +19,31 @@ import java.util.Optional;
 @ApplicationScoped
 public class HashingService {
     private final SaltRepository saltRepository;
-    private static final SecureRandom random = new SecureRandom();
-    private static SecretKeyFactory factory;
+    private final SecureRandom random = new SecureRandom();
+    private SecretKeyFactory factory;
 
     @Inject
     public HashingService(SaltRepository saltRepository) {
+        try {
+            this.factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         this.saltRepository = saltRepository;
     }
 
     public HashingService() { this(null); }
 
-    static {
-        try {
-            factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void save(Salt salt) { saltRepository.save(salt); }
     public Optional<Salt> findSaltByUserId(String userId) {
         return saltRepository.findById(userId);
     }
-    public static byte[] createSalt() {
+    public byte[] createSalt() {
         byte[] salt = new byte[16];
         random.nextBytes(salt);
         return salt;
     }
-    public static String createHash(String string, byte[] salt) {
+    public String createHash(String string, byte[] salt) {
         KeySpec spec = new PBEKeySpec(string.toCharArray(), salt, 65536, 128);
         String hash = null;
         try {
@@ -56,7 +53,7 @@ public class HashingService {
         }
         return hash;
     }
-    public static String createHash(String string, Salt salt) {
+    public String createHash(String string, Salt salt) {
         return createHash(string, salt.getSalt());
     }
 }

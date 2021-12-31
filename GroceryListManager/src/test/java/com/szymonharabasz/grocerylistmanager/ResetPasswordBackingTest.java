@@ -44,7 +44,7 @@ public class ResetPasswordBackingTest {
     void init() {
         this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
         this.salt = new Salt(userId, saltBytes);
-        user.setPasswordResetTokenHash(new ExpirablePayload(HashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
+        user.setPasswordResetTokenHash(new ExpirablePayload(mockHashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ResetPasswordBackingTest {
         resetPasswordBacking.setNewPassword(newPassword);
         resetPasswordBacking.resetPassword();
 
-        assertEquals(user.getPasswordHash(), HashingService.createHash(newPassword, salt));
+        assertEquals(user.getPasswordHash(), mockHashingService.createHash(newPassword, salt));
         verify(mockUserService).save(user);
     }
 
