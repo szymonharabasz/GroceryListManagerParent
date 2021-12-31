@@ -43,20 +43,14 @@ public class ResetPasswordBacking implements Serializable {
     public void load() {
         Optional<User> maybeUser = userService.findByName(userName);
         maybeUser.ifPresent(usr -> {
-            Optional<Salt> maybeSalt = hashingService.findSaltByUserId(usr.getId());
-            maybeSalt.ifPresent(slt -> {
-                user = usr;
-                salt = slt;
-                String tokenHash = HashingService.createHash(token, salt);
-                if (!Objects.equals(tokenHash, user.getPasswordResetTokenHash().getPayload())) {
-                    showError();
-                }
-            });
-            System.out.println("USER IS " + user + " AND SALT IS " + salt);
-            if (!maybeSalt.isPresent()) {
+            this.salt = hashingService.findSaltByUserId(usr.getId()).orElseThrow(IllegalStateException::new);
+            this.user = usr;
+            String tokenHash = HashingService.createHash(token, salt);
+            if (!Objects.equals(tokenHash, user.getPasswordResetTokenHash().getPayload())) {
                 showError();
             }
         });
+        System.out.println("USER IS " + user + " AND SALT IS " + salt);
         if (!maybeUser.isPresent()) {
             showError();
         }

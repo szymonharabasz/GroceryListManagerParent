@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,14 +34,16 @@ public class ResetPasswordBackingTest {
     @Mock
     FacesContext mockFacesContext;
 
-    String userId = "123";
-    String userName = "name";
-    User user = new User(userId, userName, "oldPasswordHash", "user@example.com");
-    byte[] saltBytes = "foobar".getBytes();
-    Salt salt = new Salt(userId, saltBytes);
+    final String userId = "123";
+    final String userName = "name";
+    final byte[] saltBytes = "foobar".getBytes();
+    User user;
+    Salt salt;
 
     @BeforeEach
     void init() {
+        this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
+        this.salt = new Salt(userId, saltBytes);
         user.setPasswordResetTokenHash(new ExpirablePayload(HashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
     }
 
@@ -77,8 +80,8 @@ public class ResetPasswordBackingTest {
     }
 
     @Test
-    @DisplayName("Does not change state if salt is not found")
-    public void doesNotChangeStatifnSaltNotFound() {
+    @DisplayName("Does not change state if token hash is wrong")
+    public void doesNotChangeStateOnWrongTokenHash() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.of(salt));
@@ -89,11 +92,12 @@ public class ResetPasswordBackingTest {
         resetPasswordBacking.load();
 
         verifyNoMoreInteractions(mockUserService);
+
     }
 
     @Test
-    @DisplayName("Does not change state if token hash is wrong")
-    public void doesNotChangeStateOnWrongTokenHash() {
+    @DisplayName("Throws the IllegalStateException if salt is not found")
+    public void throwsIfSaltNotFound() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(userId)).thenReturn(Optional.empty());
@@ -101,9 +105,7 @@ public class ResetPasswordBackingTest {
         ResetPasswordBacking resetPasswordBacking = new ResetPasswordBacking(mockUserService, mockHashingService, mockFacesContext);
         resetPasswordBacking.setUserName(userName);
 
-        resetPasswordBacking.load();
-
-        verifyNoMoreInteractions(mockUserService);
+        assertThrows(IllegalStateException.class, resetPasswordBacking::load);
     }
 
 }

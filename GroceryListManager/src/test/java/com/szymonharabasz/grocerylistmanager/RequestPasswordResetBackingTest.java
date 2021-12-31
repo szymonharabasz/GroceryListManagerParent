@@ -38,24 +38,23 @@ public class RequestPasswordResetBackingTest {
     @Mock
     Event<UserTokenWrapper> mockEvent;
 
-
-    String userId = "123";
-    String userName = "name";
-    User user = new User(userId, userName, "oldPasswordHash", "user@example.com");
-    byte[] saltBytes = "foobar".getBytes();
-    Salt salt = new Salt(userId, saltBytes);
+    final String userId = "123";
+    final String userName = "name";
+    final byte[] saltBytes = "foobar".getBytes();
+    User user;
+    Salt salt;
 
     @BeforeEach
     void init() {
+        this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
+        this.salt = new Salt(userId, saltBytes);
         user.setPasswordResetTokenHash(new ExpirablePayload(HashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
     }
 
     @Test
     @DisplayName("Does not change app state if non-existing e-mail is prrovided")
     void dontChangeStateOnWronngEmail() {
-        final String email = "user@example.com";
-
-        when(mockUserService.findByEmail(email)).thenReturn(Optional.empty());
+        when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.empty());
         when(mockFacesContext.getExternalContext()).thenReturn(mockExternalContext);
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
@@ -64,7 +63,7 @@ public class RequestPasswordResetBackingTest {
                 mockHashingService,
                 mockEvent
         );
-        requestPasswordResetBacking.setEmail(email);
+        requestPasswordResetBacking.setEmail(user.getEmail());
         requestPasswordResetBacking.request();
         verifyNoInteractions(mockHashingService);
         verifyNoInteractions(mockEvent);
@@ -86,6 +85,25 @@ public class RequestPasswordResetBackingTest {
         );
         requestPasswordResetBacking.setEmail(user.getEmail());
         assertThrows(IllegalStateException.class, requestPasswordResetBacking::request);
+
+    }
+
+    @Test
+    @DisplayName("Saves correct information about requested password change if all is correct")
+    void savePasswordResetInformationIfAllCorrect() {
+        when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.of(salt));
+
+        RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
+                mockFacesContext,
+                mockUserService,
+                mockHashingService,
+                mockEvent
+        );
+        requestPasswordResetBacking.setEmail(user.getEmail());
+        requestPasswordResetBacking.request();
+
+        verify(mockUserService).save(user);
 
     }
 
