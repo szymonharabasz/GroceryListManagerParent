@@ -7,14 +7,15 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Interceptor
 @RedirectToConfirmation
 public class RedirectToConfirmationInterceptor {
     @AroundInvoke
-    public void redirect(InvocationContext context) throws Exception {
-        context.proceed();
+    public Object redirect(InvocationContext context) throws Exception {
+        Object result = context.proceed();
         RedirectToConfirmation redirectToConfirmation = context.getMethod().getAnnotation(RedirectToConfirmation.class);
         String type = redirectToConfirmation.type();
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -27,5 +28,6 @@ public class RedirectToConfirmationInterceptor {
                     ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts")
                             .getString("generic-error-message"), null));
         }
+        return result;
     }
 }
