@@ -19,11 +19,13 @@ public class MailService {
 
     private final ServletContext servletContext;
     private final ResourceBundle resourceBundle;
+    private final Properties properties;
 
     @Inject
     public MailService(ServletContext servletContext) {
-        resourceBundle = ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts");
         this.servletContext = servletContext;
+        this.resourceBundle = ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts");
+        this.properties = setUpProperties();
     }
 
     public MailService() { this(null); }
@@ -71,25 +73,10 @@ public class MailService {
     }
 
     private Message createMessage(String to, String subject) throws MessagingException {
-        String host = servletContext.getInitParameter("mail.smtp.host");
-        String port = servletContext.getInitParameter("mail.smtp.port");
-
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", true);
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.port", port);
-        properties.put("mail.smtp.ssl.trust",host);
-        properties.put("mail.smtp.socketFactory.port", port);
-        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        properties.put("mail.smtp.socketFactory.fallback", "false");
 
         String username = servletContext.getInitParameter("mail.smtp.username");
         String password = servletContext.getInitParameter("mail.smtp.password");
-
-        System.err.println("HOST " + host);
-
-        Session session = Session.getInstance(properties, new Authenticator() {
+        Session session = Session.getInstance(this.properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
@@ -102,5 +89,23 @@ public class MailService {
         message.setSubject(subject);
 
         return message;
+    }
+
+    private Properties setUpProperties() {
+        String host = servletContext.getInitParameter("mail.smtp.host");
+        String port = servletContext.getInitParameter("mail.smtp.port");
+        System.err.println("HOST " + host);
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", true);
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", port);
+        properties.put("mail.smtp.ssl.trust",host);
+        properties.put("mail.smtp.socketFactory.port", port);
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.socketFactory.fallback", "false");
+
+        return properties;
     }
 }
