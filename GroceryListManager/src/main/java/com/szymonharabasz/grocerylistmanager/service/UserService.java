@@ -35,6 +35,10 @@ public class UserService {
         this.randomService = randomService;
     }
 
+    public UserService() {
+        this(null, null, null);
+    }
+
     public void save(User user) {
         repository.save(user);
     }
