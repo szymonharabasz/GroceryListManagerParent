@@ -17,7 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.enterprise.event.Event;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.io.IOException;
+import javax.security.enterprise.SecurityContext;
+import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RequestPasswordResetBackingTest {
+public class RequestNewConfirmationBackingTest {
     @Mock
     RandomService randomService;
     @Mock
@@ -38,9 +39,9 @@ public class RequestPasswordResetBackingTest {
     @Mock
     FacesContext mockFacesContext;
     @Mock
-    ExternalContext mockExternalContext;
+    SecurityContext mockSecurityContext;
     @Mock
-    Event<UserTokenWrapper> mockEvent;
+    Event<User> mockEvent;
 
     final String userId = "123";
     final String userName = "name";
@@ -49,68 +50,51 @@ public class RequestPasswordResetBackingTest {
     final byte[] saltBytes = "foobar".getBytes();
     User user;
     Salt salt;
+    Principal principal;
 
     @BeforeEach
     void init() {
         this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
         this.salt = new Salt(userId, saltBytes);
         user.setPasswordResetTokenHash(new ExpirablePayload(mockHashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
+        principal = () -> user.getName();
     }
 
     @Test
-    @DisplayName("Does not change app state if non-existing e-mail is prrovided")
+    @DisplayName("Does not change app state if user is not logged in")
     void dontChangeStateOnWrongEmail() {
-        when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        when(mockSecurityContext.getCallerPrincipal()).thenReturn(principal);
+        when(mockUserService.findByName(principal.getName())).thenReturn(Optional.empty());
 
-        RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
+        RequestNewConfirmationBacking requestNewConfirmationBacking = new RequestNewConfirmationBacking(
                 randomService,
                 mockUserService,
-                mockHashingService,
+                mockSecurityContext,
                 mockEvent
         );
-        requestPasswordResetBacking.setEmail(user.getEmail());
-        requestPasswordResetBacking.request();
+        requestNewConfirmationBacking.request();
         verifyNoInteractions(mockEvent);
         verifyNoMoreInteractions(mockUserService);
     }
 
     @Test
-    @DisplayName("Throws IllegalStateException when good email is provided, but salt was not found")
-    void throwOnGoodEmailButBadSalt() {
-        when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.empty());
-
-        RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                randomService,
-                mockUserService,
-                mockHashingService,
-                mockEvent
-        );
-        requestPasswordResetBacking.setEmail(user.getEmail());
-        assertThrows(IllegalStateException.class, requestPasswordResetBacking::request);
-
-    }
-
-    @Test
-    @DisplayName("Saves correct information about requested password change if all is correct")
-    void savePasswordResetInformationIfAllCorrect() {
-        when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.of(salt));
-        when(mockHashingService.createHash(token, salt)).thenReturn(tokenHash);
+    @DisplayName("Saves correct information about new confirmation e-mail if all is correct")
+    void saveNewConfirmationInformationIfAllCorrect() {
+        when(mockSecurityContext.getCallerPrincipal()).thenReturn(principal);
+        when(mockUserService.findByName(principal.getName())).thenReturn(Optional.of(user));
         when(randomService.getAlphanumeric(32)).thenReturn(token);
 
-        RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
+        RequestNewConfirmationBacking requestNewConfirmationBacking = new RequestNewConfirmationBacking(
                 randomService,
                 mockUserService,
-                mockHashingService,
+                mockSecurityContext,
                 mockEvent
         );
-        requestPasswordResetBacking.setEmail(user.getEmail());
-        requestPasswordResetBacking.request();
+        requestNewConfirmationBacking.request();
 
         verify(mockUserService).save(user);
-        verify(mockEvent).fireAsync(new UserTokenWrapper(user, token));
-        assertEquals(user.getPasswordResetTokenHash().getPayload(), tokenHash);
+        verify(mockEvent).fireAsync(user);
+        assertEquals(user.getConfirmationToken().getPayload(), token);
 
     }
 
