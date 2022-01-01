@@ -28,42 +28,38 @@ public class MailService {
 
     public MailService() { this(null); }
 
-    public void sendConfirmation(@ObservesAsync User user) throws MessagingException {
-        Message message = createMessage();
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(user.getEmail()));
-        message.setSubject(resourceBundle.getString("confirmation-mail-title"));
-
+    private String getLinkPrefix() {
         String contextPath = servletContext.getContextPath();
         String webserver = System.getProperty("HOST", "https://localhost:8181/");
+        return webserver + contextPath;
+    }
+
+    public void sendConfirmation(@ObservesAsync User user) throws MessagingException {
         String confirmationToken = user.getConfirmationToken().getPayload();
-        String link = webserver + contextPath + "/confirm.xhtml?token=" + confirmationToken;
+        String link = getLinkPrefix() + "/confirm.xhtml?token=" + confirmationToken;
 
-        String msg = String.format(
+        String to = user.getEmail();
+        String subject = resourceBundle.getString("confirmation-mail-title");
+        String content = String.format(
                 resourceBundle.getString("confirmation-mail-format"), user.getName(), link, link);
-        MimeBodyPart mimeBodyPart = new MimeBodyPart();
-        mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
-
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(mimeBodyPart);
-
-        message.setContent(multipart);
-
-        Transport.send(message);
+        sendMessage(to, subject, content);
     }
 
     public void sendPasswordReset(@ObservesAsync UserTokenWrapper userTokenWrapper) throws MessagingException {
-        Message message = createMessage();
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(userTokenWrapper.getUser().getEmail()));
-        message.setSubject(resourceBundle.getString("password-reset-mail-title"));
-
-        String contextPath = servletContext.getContextPath();
-        String webserver = System.getProperty("HOST", "https://localhost:8181/");
-        String link = webserver + contextPath + "/reset-password.xhtml?user=" + userTokenWrapper.getUser().getName() +
+        String link = getLinkPrefix() + "/reset-password.xhtml?user=" + userTokenWrapper.getUser().getName() +
                 "&token=" + userTokenWrapper.getToken();
 
-        String msg = String.format(resourceBundle.getString("password-reset-mail-format"), userTokenWrapper.getUser().getName(), link, link);
+        String to = userTokenWrapper.getUser().getEmail();
+        String subject = resourceBundle.getString("password-reset-mail-title");
+        String content = String.format(resourceBundle.getString("password-reset-mail-format"), userTokenWrapper.getUser().getName(), link, link);
+        sendMessage(to, subject, content);
+    }
+
+    private void sendMessage(String to, String subject, String content) throws MessagingException {
+        Message message = createMessage(to, subject);
+
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
-        mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
+        mimeBodyPart.setContent(content, "text/html; charset=utf-8");
 
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(mimeBodyPart);
@@ -71,9 +67,10 @@ public class MailService {
         message.setContent(multipart);
 
         Transport.send(message);
+
     }
 
-    private Message createMessage() throws MessagingException {
+    private Message createMessage(String to, String subject) throws MessagingException {
         String host = servletContext.getInitParameter("mail.smtp.host");
         String port = servletContext.getInitParameter("mail.smtp.port");
 
@@ -101,6 +98,8 @@ public class MailService {
         String address = servletContext.getInitParameter("mail.smtp.address");
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(address));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        message.setSubject(subject);
 
         return message;
     }
