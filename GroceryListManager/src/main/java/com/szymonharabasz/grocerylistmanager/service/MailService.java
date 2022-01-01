@@ -3,6 +3,7 @@ package com.szymonharabasz.grocerylistmanager.service;
 import com.szymonharabasz.grocerylistmanager.domain.User;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -10,15 +11,18 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.servlet.ServletContext;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 @Named
 @ApplicationScoped
 public class MailService {
 
     private final ServletContext servletContext;
+    private final ResourceBundle resourceBundle;
 
     @Inject
     public MailService(ServletContext servletContext) {
+        resourceBundle = ResourceBundle.getBundle("com.szymonharabasz.grocerylistmanager.texts");
         this.servletContext = servletContext;
     }
 
@@ -27,23 +31,15 @@ public class MailService {
     public void sendConfirmation(@ObservesAsync User user) throws MessagingException {
         Message message = createMessage();
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(user.getEmail()));
-        message.setSubject("[Grocery List Manager] Confirm your email.");
+        message.setSubject(resourceBundle.getString("confirmation-mail-title"));
 
         String contextPath = servletContext.getContextPath();
-        // TODO: change to real domain
-        String webserver = System.getProperty("HOST");
+        String webserver = System.getProperty("HOST", "https://localhost:8181/");
         String confirmationToken = user.getConfirmationToken().getPayload();
         String link = webserver + contextPath + "/confirm.xhtml?token=" + confirmationToken;
 
-        String msg = "<h3>Hello, " + user.getName() + "!</h3><br /><br />" +
-                "to confirm you e-mail address in the Grocery List Manager application, " +
-                "please click on the link below or copy it to " +
-                "your web browser address bar.<br /><br />" +
-                "<a href=\"" + link + "\">" + link + "</a><br /><br />" +
-                "This helps use to make sure that you are a real personn and that your address " +
-                "can be used for password recovery should you need that. If you fail to confirm your e-mail," +
-                "your acount will be removed after 48 hours.<br /><br />" +
-                "Your Grocery List Manager Team";
+        String msg = String.format(
+                resourceBundle.getString("confirmation-mail-format"), user.getName(), link, link);
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
 
@@ -58,21 +54,14 @@ public class MailService {
     public void sendPasswordReset(@ObservesAsync UserTokenWrapper userTokenWrapper) throws MessagingException {
         Message message = createMessage();
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(userTokenWrapper.getUser().getEmail()));
-        message.setSubject("[Grocery List Manager] Reset your password.");
+        message.setSubject(resourceBundle.getString("password-reset-mail-title"));
 
         String contextPath = servletContext.getContextPath();
-        // TODO: change to real domain
-        String webserver = System.getProperty("HOST");
+        String webserver = System.getProperty("HOST", "https://localhost:8181/");
         String link = webserver + contextPath + "/reset-password.xhtml?user=" + userTokenWrapper.getUser().getName() +
                 "&token=" + userTokenWrapper.getToken();
 
-        String msg = "<h3>Hello, " + userTokenWrapper.getUser().getName() + "!</h3><br /><br />" +
-                "to reset your password in the Grocery List Manager application, " +
-                "please click on the link below or copy it to " +
-                "your web browser address bar.<br /><br />" +
-                "<a href=\"" + link + "\">" + link + "</a><br /><br />" +
-                "If you have not requested to reset your password, please ignore this e-mail..<br /><br />" +
-                "Your Grocery List Manager Team";
+        String msg = String.format(resourceBundle.getString("password-reset-mail-format"), userTokenWrapper.getUser().getName(), link, link);
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
 
