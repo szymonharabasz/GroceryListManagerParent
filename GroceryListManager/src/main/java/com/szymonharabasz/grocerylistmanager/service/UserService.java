@@ -23,17 +23,15 @@ import static jakarta.nosql.document.DocumentQuery.select;
 @ApplicationScoped
 public class UserService {
 
-    @Inject
     @Database(DatabaseType.DOCUMENT)
-    UserRepository repository;
-
-    @Inject
-    private DocumentTemplate documentTemplate;
-
+    private final UserRepository repository;
+    private final DocumentTemplate documentTemplate;
     private final RandomService randomService;
 
     @Inject
-    public UserService(RandomService randomService) {
+    public UserService(UserRepository repository, DocumentTemplate documentTemplate, RandomService randomService) {
+        this.repository = repository;
+        this.documentTemplate = documentTemplate;
         this.randomService = randomService;
     }
 
@@ -47,7 +45,6 @@ public class UserService {
     }
 
     public Optional<User> findByConfirmationToken(String token) {
-        //return repository.findByConfirmationToken(token);
         return findBy("confirmationToken._id", token);
     }
 
