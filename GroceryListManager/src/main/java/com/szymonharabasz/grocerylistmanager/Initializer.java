@@ -41,7 +41,7 @@ public class Initializer {
         GroceryList list2 = new GroceryList(generateID(), "Rewe", "Shopping list for Rewe");
         listsService.saveList(list1);
         listsService.saveList(list2);
-        Salt salt = new Salt(generateID(), hashingService.createSalt());
+        Salt salt = hashingService.createSalt();
         hashingService.save(salt);
         User user1 = new User(salt.getUserId(), "Carl",
                 hashingService.createHash("pwd", salt), "carl@example.com");

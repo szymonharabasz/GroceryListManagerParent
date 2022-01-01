@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.enterprise.event.Event;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class RequestPasswordResetBackingTest {
     @Mock
-    RandomService randomService;
+    RandomService mockRandomService;
     @Mock
     UserService mockUserService;
     @Mock
@@ -63,7 +62,7 @@ public class RequestPasswordResetBackingTest {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                randomService,
+                mockRandomService,
                 mockUserService,
                 mockHashingService,
                 mockEvent
@@ -81,7 +80,7 @@ public class RequestPasswordResetBackingTest {
         when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.empty());
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                randomService,
+                mockRandomService,
                 mockUserService,
                 mockHashingService,
                 mockEvent
@@ -97,10 +96,10 @@ public class RequestPasswordResetBackingTest {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.of(salt));
         when(mockHashingService.createHash(token, salt)).thenReturn(tokenHash);
-        when(randomService.getAlphanumeric(32)).thenReturn(token);
+        when(mockRandomService.getAlphanumeric(32)).thenReturn(token);
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
-                randomService,
+                mockRandomService,
                 mockUserService,
                 mockHashingService,
                 mockEvent

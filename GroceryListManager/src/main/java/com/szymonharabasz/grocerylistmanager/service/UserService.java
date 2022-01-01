@@ -1,5 +1,6 @@
 package com.szymonharabasz.grocerylistmanager.service;
 
+import com.szymonharabasz.grocerylistmanager.domain.ExpirablePayload;
 import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.domain.UserRepository;
 import jakarta.nosql.document.DocumentQuery;
@@ -10,6 +11,9 @@ import jakarta.nosql.mapping.document.DocumentTemplate;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,13 @@ public class UserService {
 
     @Inject
     private DocumentTemplate documentTemplate;
+
+    private final RandomService randomService;
+
+    @Inject
+    public UserService(RandomService randomService) {
+        this.randomService = randomService;
+    }
 
     public void save(User user) {
         repository.save(user);
@@ -49,5 +60,12 @@ public class UserService {
 
     public List<User> findAll() {
         return repository.findAll();
+    }
+
+    public User createUser(String userId, String username, String passwordHash, String email) {
+        User user =  new User(userId, username, passwordHash, email);
+        Date expiresAt = Date.from(Instant.now().plus(Duration.ofDays(2)));
+        user.setConfirmationToken(new ExpirablePayload(randomService.getAlphanumeric(32), expiresAt));
+        return user;
     }
 }

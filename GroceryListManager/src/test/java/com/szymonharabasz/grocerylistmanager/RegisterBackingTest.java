@@ -14,9 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.enterprise.event.Event;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.security.enterprise.SecurityContext;
-import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -27,9 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RequestNewConfirmationBackingTest {
-    @Mock
-    RandomService mockRandomService;
+public class RegisterBackingTest {
     @Mock
     UserService mockUserService;
     @Mock
@@ -37,62 +34,47 @@ public class RequestNewConfirmationBackingTest {
     @Mock
     FacesContext mockFacesContext;
     @Mock
-    SecurityContext mockSecurityContext;
+    ExternalContext mockExternalContext;
     @Mock
     Event<User> mockEvent;
 
     final String userId = "123";
     final String userName = "name";
+    final String password = "password";
+    final String passwordHash = "passwordHash";
     final String token = "token";
     final String tokenHash = "tokenHash";
+    final String email = "user@example.com";
     final byte[] saltBytes = "foobar".getBytes();
     User user;
     Salt salt;
-    Principal principal;
 
     @BeforeEach
     void init() {
         this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
         this.salt = new Salt(userId, saltBytes);
-        user.setPasswordResetTokenHash(new ExpirablePayload(mockHashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
-        principal = () -> user.getName();
     }
 
     @Test
-    @DisplayName("Does not change app state if user is not logged in")
-    void dontChangeStateOnWrongEmail() {
-        when(mockSecurityContext.getCallerPrincipal()).thenReturn(principal);
-        when(mockUserService.findByName(principal.getName())).thenReturn(Optional.empty());
+    @DisplayName("Registers a new user")
+    void registersNewUser() {
+        when(mockHashingService.createSalt()).thenReturn(salt);
+        when(mockHashingService.createHash(password, salt)).thenReturn(passwordHash);
+        when(mockUserService.createUser(salt.getUserId(), userName, passwordHash, email))
+                .thenReturn(user);
 
-        RequestNewConfirmationBacking requestNewConfirmationBacking = new RequestNewConfirmationBacking(
-                mockRandomService,
+        RegisterBacking registerBacking = new RegisterBacking(
                 mockUserService,
-                mockSecurityContext,
+                mockHashingService,
                 mockEvent
         );
-        requestNewConfirmationBacking.request();
-        verifyNoInteractions(mockEvent);
-        verifyNoMoreInteractions(mockUserService);
-    }
-
-    @Test
-    @DisplayName("Saves correct information about new confirmation e-mail if all is correct")
-    void saveNewConfirmationInformationIfAllCorrect() {
-        when(mockSecurityContext.getCallerPrincipal()).thenReturn(principal);
-        when(mockUserService.findByName(principal.getName())).thenReturn(Optional.of(user));
-        when(mockRandomService.getAlphanumeric(32)).thenReturn(token);
-
-        RequestNewConfirmationBacking requestNewConfirmationBacking = new RequestNewConfirmationBacking(
-                mockRandomService,
-                mockUserService,
-                mockSecurityContext,
-                mockEvent
-        );
-        requestNewConfirmationBacking.request();
+        registerBacking.setUsername(userName);
+        registerBacking.setPassword(password);
+        registerBacking.setEmail(email);
+        registerBacking.register();
 
         verify(mockUserService).save(user);
         verify(mockEvent).fireAsync(user);
-        assertEquals(user.getConfirmationToken().getPayload(), token);
 
     }
 

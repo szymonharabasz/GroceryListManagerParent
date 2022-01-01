@@ -1,5 +1,6 @@
 package com.szymonharabasz.grocerylistmanager.service;
 
+import com.szymonharabasz.grocerylistmanager.Utils;
 import com.szymonharabasz.grocerylistmanager.domain.Salt;
 import com.szymonharabasz.grocerylistmanager.domain.SaltRepository;
 
@@ -38,10 +39,10 @@ public class HashingService {
     public Optional<Salt> findSaltByUserId(String userId) {
         return saltRepository.findById(userId);
     }
-    public byte[] createSalt() {
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return salt;
+    public Salt createSalt() {
+        byte[] saltBytes = new byte[16];
+        random.nextBytes(saltBytes);
+        return new Salt(Utils.generateID(), saltBytes);
     }
     public String createHash(String string, byte[] salt) {
         KeySpec spec = new PBEKeySpec(string.toCharArray(), salt, 65536, 128);
