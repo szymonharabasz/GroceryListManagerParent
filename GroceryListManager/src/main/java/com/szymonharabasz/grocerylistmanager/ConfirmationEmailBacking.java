@@ -19,14 +19,14 @@ import java.util.ResourceBundle;
 public class ConfirmationEmailBacking {
 
     private final UserService userService;
-    private final ExternalContext externalContext;
+    private final FacesContext facesContext;
 
     private String token;
 
     @Inject
     public ConfirmationEmailBacking(UserService userService, FacesContext facesContext) {
         this.userService = userService;
-        this.externalContext = facesContext.getExternalContext();
+        this.facesContext = facesContext;
     }
 
     public void confirmEmail() {
@@ -36,7 +36,7 @@ public class ConfirmationEmailBacking {
             usr.setConfirmed(true);
             usr.setConfirmationToken(null);
             userService.save(usr);
-            FacesContext.getCurrentInstance().addMessage(null,
+            facesContext.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
                             "Your e-mail addeess has been successfully confirmed. You can now sign in to " +
                                     "your account"));
