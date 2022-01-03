@@ -39,12 +39,15 @@
                                                  rendered="#{list.edited}"
                                                  value="#{list.name}"/>
                                 </div>
-                                <div class="ui-g-6">
+                                <div class="ui-g-4">
                                     <h:outputText id="outDesc#{list.id}" rendered="#{!list.edited}"
                                                   value="#{list.description}"/>
                                     <p:inputText styleClass="ui-g-12" label="inDesc#{list.id}" id="inDesc#{list.id}"
                                                  rendered="#{list.edited}"
                                                  value="#{list.description}"/>
+                                </div>
+                                <div class="ui-g-2">
+                                    <h:outputText id="outLastModified#{list.id}" value="#{list.lastModified}"/>
                                 </div>
                                 <div class="ui-g-4" style="text-align: right">
                                     <p:commandLink rendered="#{!list.expanded}" value="Expand">

@@ -6,6 +6,7 @@ import jakarta.nosql.mapping.Id;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -20,15 +21,18 @@ public class GroceryList implements Serializable {
     private String description;
     @Column
     private List<GroceryItem> items = new ArrayList<>();
+    @Column
+    private Date lastModified;
 
     private Logger logger = Logger.getLogger(GroceryList.class.getName());
 
     public GroceryList() {}
 
-    public GroceryList(String id, String name, String description) {
+    public GroceryList(String id, String name, String description, Date lastModified) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.lastModified = lastModified;
     }
 
     public String getName() {
@@ -65,6 +69,14 @@ public class GroceryList implements Serializable {
         this.description = description;
     }
 
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
     public List<GroceryItem> getItems() { return items; }
 
     public void setItems(List<GroceryItem> items) {
@@ -77,6 +89,7 @@ public class GroceryList implements Serializable {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", lastModified=" + lastModified +
                 '}';
     }
 

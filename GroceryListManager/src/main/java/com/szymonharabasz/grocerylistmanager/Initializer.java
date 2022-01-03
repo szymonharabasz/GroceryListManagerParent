@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import static com.szymonharabasz.grocerylistmanager.Utils.generateID;
@@ -35,10 +36,10 @@ public class Initializer {
     @PostConstruct
     public void loadLists() {
         String listId1 = generateID();
-        GroceryList list1 = new GroceryList(listId1, "Aldi", "Shopping list for Aldi");
+        GroceryList list1 = new GroceryList(listId1, "Aldi", "Shopping list for Aldi" ,new Date());
         list1.addItem(new GroceryItem(generateID(), false,"Potatoes", "kg", BigDecimal.valueOf(1.0)));
         list1.addItem(new GroceryItem(generateID(), false,"Tomatoes", "kg", BigDecimal.valueOf(0.5)));
-        GroceryList list2 = new GroceryList(generateID(), "Rewe", "Shopping list for Rewe");
+        GroceryList list2 = new GroceryList(generateID(), "Rewe", "Shopping list for Rewe", new Date());
         listsService.saveList(list1);
         listsService.saveList(list2);
         Salt salt = hashingService.createSalt();

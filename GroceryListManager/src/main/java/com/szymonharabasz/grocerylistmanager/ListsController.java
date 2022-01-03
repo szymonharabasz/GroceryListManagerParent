@@ -121,7 +121,7 @@ public class ListsController implements Serializable {
         System.err.println("Adding new list for user " + securityContext.getCallerPrincipal().getName());
         currenUser().ifPresent(user -> {
             System.err.println("Adding new list for user " + user.getName());
-            GroceryListView list = new GroceryListView(UUID.randomUUID().toString(), "", "");
+            GroceryListView list = new GroceryListView(UUID.randomUUID().toString(), "", "", new Date());
             user.addListId(list.getId());
             userService.save(user);
             list.setEdited(true);
