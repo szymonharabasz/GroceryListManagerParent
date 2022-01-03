@@ -48,43 +48,55 @@
                                              value="#{list.description}"/>
                             </div>
                             <div class="ui-g-2">
-                                <h:outputText value="Last modified "/>
+                                <h:outputText value="Last modified "/><br/>
                                 <h:outputText id="outLastModified#{list.id}" value="#{list.lastModified}">
                                     <f:convertDateTime pattern="dd MMM yyyy HH:mm"/>
                                 </h:outputText>
                             </div>
                             <div class="ui-g-4" style="text-align: right">
-                                <p:commandLink value="">
+                                <p:commandLink value="" id="linkUp">
                                     <i class="pi pi-angle-up"></i>
                                     <p:ajax event="click" listener="#{listsController.moveUp(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
-                                <p:commandLink value="">
+                                <p:tooltip for="linkUp" value="Move list up"/>
+                                <p:commandLink value="" id="linkDown">
                                     <i class="pi pi-angle-down"></i>
                                     <p:ajax event="click" listener="#{listsController.moveDown(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
-                                <p:commandLink rendered="#{!list.expanded}" value="Expand">
+                                <p:tooltip for="linkDown" value="Move list down"/>
+                                <p:commandLink rendered="#{!list.expanded}" value="" id="linkExpand">
+                                    <i class="pi pi-caret-down"></i>
                                     <p:ajax event="click" listener="#{listsController.expand(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
-                                <p:commandLink rendered="#{list.expanded}" value="Collapse">
+                                <p:tooltip for="linkExpand" value="Expand list"/>
+                                <p:commandLink rendered="#{list.expanded}" value="" id="linkCollapse">
+                                    <i class="pi pi-caret-up"></i>
                                     <p:ajax event="click" listener="#{listsController.collapse(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
-                                <p:commandLink rendered="#{!list.edited}" value="Edit #{status.index}"
+                                <p:tooltip for="linkCollapse" value="Collapse list"/>
+                                <p:commandLink rendered="#{!list.edited}" value="" id="linkEdit"
                                                label="btnEdit#{list.id}">
+                                    <i class="pi pi-pencil"></i>
                                     <p:ajax event="click" listener="#{listsController.editList(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
-                                <p:commandLink rendered="#{list.edited}" value="Save">
+                                <p:tooltip for="linkEdit" value="Edit list header"/>
+                                <p:commandLink rendered="#{list.edited}" value="" id="linkSave">
+                                    <i class="pi pi-save"></i>
                                     <p:ajax event="click" listener="#{listsController.saveList(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
-                                <p:commandLink value="Delete">
+                                <p:tooltip for="linkSave" value="Save list header"/>
+                                <p:commandLink value="" id="linkDelete" styleClass="ui-button-danger">
+                                    <i class="pi pi-trash"></i>
                                     <p:ajax event="click" listener="#{listsController.removeList(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
+                                <p:tooltip for="linkDelete" value="Delete list"/>
                             </div>
                         </div>
                         <div>
@@ -113,31 +125,41 @@
                                                          rendered="#{item.edited}"/>
                                         </div>
                                         <div class="ui-g-3 ui-g-offset-1" style="text-align: right">
-                                            <p:commandLink value="Up">
+                                            <p:commandLink value="" id="linkMoveItemUp">
+                                                <i class="pi pi-angle-up"></i>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.moveItemUp(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
-                                            <p:commandLink value="Down">
+                                            <p:tooltip for="linkMoveItemUp" value="Move item up"/>
+                                            <p:commandLink value="" id="linkMoveItemDown">
+                                                <i class="pi pi-angle-down"></i>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.moveItemDown(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
-                                            <p:commandLink rendered="#{!item.edited}" value="Edit">
+                                            <p:tooltip for="linkMoveItemDown" value="Move item down"/>
+                                            <p:commandLink rendered="#{!item.edited}" value="" id = "linkEditItem">
+                                                <i class="pi pi-pencil"></i>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.editItem(item.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
-                                            <p:commandLink rendered="#{item.edited}" value="Save">
+                                            <p:tooltip for="linkEditItem" value="Edit item"/>
+                                            <p:commandLink rendered="#{item.edited}" value="" id="linkSaveItem">
+                                                <i class="pi pi-save"></i>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.saveItem(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
-                                            <p:commandLink value="Delete">
+                                            <p:tooltip for="linkSaveItem" value="Save item"/>
+                                            <p:commandLink value="" id="linkDeleteItem">
+                                                <i class="pi pi-trash"></i>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.removeItem(item.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
+                                            <p:tooltip for="linkDeleteItem" value="Delete item"/>
                                         </div>
                                     </div>
                                 </p:dataViewListItem>
