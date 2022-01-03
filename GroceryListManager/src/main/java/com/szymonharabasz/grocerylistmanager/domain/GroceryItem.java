@@ -23,8 +23,6 @@ public class GroceryItem implements Serializable {
     @Column
     private BigDecimal quantity;
 
-    public GroceryItem() {}
-
     public GroceryItem(String id, boolean done, String name, String unit, BigDecimal quantity) {
         this.id = id;
         this.done = done;
@@ -32,6 +30,8 @@ public class GroceryItem implements Serializable {
         this.unit = unit;
         this.quantity = quantity;
     }
+
+    public GroceryItem() { }
 
     public String getId() {
         return id;
@@ -89,7 +89,9 @@ public class GroceryItem implements Serializable {
     @Override
     public String toString() {
         return "GroceryItem{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", done=" + done +
+                ", name='" + name + '\'' +
                 ", unit='" + unit + '\'' +
                 ", quantity=" + quantity +
                 '}';

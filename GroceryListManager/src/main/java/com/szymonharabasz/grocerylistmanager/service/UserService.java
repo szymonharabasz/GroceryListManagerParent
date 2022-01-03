@@ -69,4 +69,16 @@ public class UserService {
         user.setConfirmationToken(new ExpirablePayload(randomService.getAlphanumeric(32), expiresAt));
         return user;
     }
+
+    public void moveUp(User user, String listId) {
+        System.err.println("Before moving up: " + user);
+        user.moveListIdUp(listId);
+        System.err.println("After moving up: " + user);
+        repository.save(user);
+    }
+
+    public void moveDown(User user, String listId) {
+        user.moveListIdDown(listId);
+        repository.save(user);
+    }
 }

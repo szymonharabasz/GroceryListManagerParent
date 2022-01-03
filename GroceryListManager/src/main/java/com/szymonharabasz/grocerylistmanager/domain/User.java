@@ -6,6 +6,7 @@ import jakarta.nosql.mapping.Id;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -109,4 +110,33 @@ public class User implements Serializable {
         this.passwordResetTokenHash = passwordResetToken;
     }
 
+    public void moveListIdUp(String listId) {
+        int index = listIds.indexOf(listId);
+        System.err.println("Index of " + listId + " is " + index);
+        if (index > 0) {
+            System.err.println("Before swapping: " + listIds);
+            Collections.swap(listIds, index, index-1);
+            System.err.println("After swapping " + listIds);
+        }
+    }
+
+    public void moveListIdDown(String listId) {
+        int index = listIds.indexOf(listId);
+        if (index < listIds.size()-1) {
+            Collections.swap(listIds, index, index+1);
+        }
+    }
+
+    public int getIndexOfListId(String listId) {
+        return listIds.indexOf(listId);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", listIds=" + listIds +
+                '}';
+    }
 }

@@ -60,6 +60,10 @@
         <param-name>mail.smtp.address</param-name>
         <param-value>grocerylistmanagerapp@gmail.com</param-value>
     </context-param>
+    <context-param>
+        <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+        <param-value>false</param-value>
+    </context-param>
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Lists page</web-resource-name>

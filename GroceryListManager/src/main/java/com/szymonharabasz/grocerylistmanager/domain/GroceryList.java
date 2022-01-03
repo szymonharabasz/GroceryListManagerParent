@@ -26,14 +26,14 @@ public class GroceryList implements Serializable {
 
     private Logger logger = Logger.getLogger(GroceryList.class.getName());
 
-    public GroceryList() {}
-
     public GroceryList(String id, String name, String description, Date lastModified) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.lastModified = lastModified;
     }
+
+    public GroceryList() { }
 
     public String getName() {
         return name;
@@ -89,6 +89,7 @@ public class GroceryList implements Serializable {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", items=" + items +
                 ", lastModified=" + lastModified +
                 '}';
     }

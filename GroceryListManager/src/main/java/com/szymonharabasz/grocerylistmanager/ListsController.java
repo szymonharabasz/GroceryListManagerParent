@@ -84,6 +84,14 @@ public class ListsController implements Serializable {
         findList(id).ifPresent(list -> list.setExpanded(false));
     }
 
+    public void moveUp(String listId) {
+        currenUser().ifPresent(user -> userService.moveUp(user, listId));
+    }
+
+    public void moveDown(String listId) {
+        currenUser().ifPresent(user -> userService.moveDown(user, listId));
+    }
+
     public void removeList(String id) {
         listsService.removeList(id);
         fetchLists();
@@ -131,10 +139,10 @@ public class ListsController implements Serializable {
     }
 
     public void addItem(String listId) {
-        GroceryItemView item = new GroceryItemView(UUID.randomUUID().toString(), false,"", "", BigDecimal.valueOf(0.0));
-        item.setEdited(true);
         findList(listId).ifPresent(list -> {
             logger.severe("Adding item to list " + list.getName());
+            GroceryItemView item = new GroceryItemView(UUID.randomUUID().toString(), false,"", "", BigDecimal.valueOf(0.0));
+            item.setEdited(true);
             list.addItem(item);
             GroceryList groceryList = list.toGroceryList();
             logger.severe("List view has " + list.getItems().size() + ", list has " + groceryList.getItems().size() + " items.");
@@ -159,23 +167,25 @@ public class ListsController implements Serializable {
     public void fetchLists() {
         logger.warning("Lists are fetched.");
         currenUser().ifPresent(user -> lists = listsService.getLists().stream()
-                    .filter(list -> user.hasListId(list.getId()))
-                    .map(list -> {
-                        GroceryListView listView = new GroceryListView(list);
-                        findList(list.getId()).ifPresent(oldListView -> {
-                            listView.setExpanded(oldListView.isExpanded());
-                            listView.setEdited(oldListView.isEdited());
-                            listView.setItems(StreamUtils.zip(
-                                    oldListView.getItems().stream(),
-                                    listView.getItems().stream(),
-                                    (oldItemView, newItemView) -> {
-                                        newItemView.setEdited(oldItemView.isEdited());
-                                        return newItemView;
-                                    }
-                            ).collect(Collectors.toList()));
-                        });
-                        return listView;
-                    }).collect(Collectors.toList())
+                .filter(list -> user.hasListId(list.getId())).sorted(
+                        Comparator.comparingInt(l -> user.getIndexOfListId(l.getId()))
+                )
+                .map(list -> {
+                    GroceryListView listView = new GroceryListView(list);
+                    findList(list.getId()).ifPresent(oldListView -> {
+                        listView.setExpanded(oldListView.isExpanded());
+                        listView.setEdited(oldListView.isEdited());
+                        listView.setItems(StreamUtils.zip(
+                                oldListView.getItems().stream(),
+                                listView.getItems().stream(),
+                                (oldItemView, newItemView) -> {
+                                    newItemView.setEdited(oldItemView.isEdited());
+                                    return newItemView;
+                                }
+                        ).collect(Collectors.toList()));
+                    });
+                    return listView;
+                }).collect(Collectors.toList())
         );
     }
 

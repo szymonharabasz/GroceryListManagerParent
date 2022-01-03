@@ -49,10 +49,18 @@
                                 <div class="ui-g-2">
                                     <h:outputText value="Last modified "/>
                                     <h:outputText id="outLastModified#{list.id}" value="#{list.lastModified}">
-                                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm"/>
+                                        <f:convertDateTime pattern="dd MMM yyyy HH:mm"/>
                                     </h:outputText>
                                 </div>
                                 <div class="ui-g-4" style="text-align: right">
+                                    <p:commandLink value="Up">
+                                        <p:ajax event="click" listener="#{listsController.moveUp(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandLink>
+                                    <p:commandLink value="Down">
+                                        <p:ajax event="click" listener="#{listsController.moveDown(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandLink>
                                     <p:commandLink rendered="#{!list.expanded}" value="Expand">
                                         <p:ajax event="click" listener="#{listsController.expand(list.id)}"
                                                 process="@all" update="@all"/>
