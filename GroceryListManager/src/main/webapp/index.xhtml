@@ -47,7 +47,9 @@
                                                  value="#{list.description}"/>
                                 </div>
                                 <div class="ui-g-2">
-                                    <h:outputText id="outLastModified#{list.id}" value="#{list.lastModified}"/>
+                                    <h:outputText id="outLastModified#{list.id}" value="Last modified #{list.lastModified}">
+                                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm"/>
+                                    </h:outputText>
                                 </div>
                                 <div class="ui-g-4" style="text-align: right">
                                     <p:commandLink rendered="#{!list.expanded}" value="Expand">
