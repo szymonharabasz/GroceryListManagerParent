@@ -84,4 +84,20 @@ public class ListsService {
             saveList(list);
         }
     }
+
+    public void moveItemUp(String itemId, String listId) {
+        findList(listId).ifPresent(list -> {
+            list.moveItemUp(itemId);
+            saveList(list);
+        });
+    }
+
+    public void moveItemDown(String itemId, String listId) {
+        findList(listId).ifPresent(list -> {
+            System.err.println("Before moving down: " + list);
+            list.moveItemDown(itemId);
+            System.err.println("After moving down: " + list);
+            saveList(list);
+        });
+    }
 }

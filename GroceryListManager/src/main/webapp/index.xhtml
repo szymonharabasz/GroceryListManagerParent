@@ -107,6 +107,14 @@
                                                 <p:inputText styleClass="ui-g-12" value="#{item.unit}" rendered="#{item.edited}"/>
                                             </div>
                                             <div class="ui-g-3 ui-g-offset-1" style="text-align: right">
+                                                <p:commandLink value="Up">
+                                                    <p:ajax event="click" listener="#{listsController.moveItemUp(item.id, list.id)}"
+                                                            process="@all" update="@all"/>
+                                                </p:commandLink>
+                                                <p:commandLink value="Down">
+                                                    <p:ajax event="click" listener="#{listsController.moveItemDown(item.id, list.id)}"
+                                                            process="@all" update="@all"/>
+                                                </p:commandLink>
                                                 <p:commandLink rendered="#{!item.edited}" value="Edit">
                                                     <p:ajax event="click"
                                                             listener="#{listsController.editItem(item.id)}"

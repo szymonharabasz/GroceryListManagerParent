@@ -78,12 +78,12 @@ public class GroceryItem implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GroceryItem that = (GroceryItem) o;
-        return compare(that.quantity, quantity) == 0 && name.equals(that.name) && Objects.equals(unit, that.unit);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, unit, quantity);
+        return Objects.hash(id);
     }
 
     @Override

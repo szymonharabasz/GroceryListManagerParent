@@ -5,10 +5,8 @@ import jakarta.nosql.mapping.Entity;
 import jakarta.nosql.mapping.Id;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Entity("GroceryList")
@@ -100,5 +98,22 @@ public class GroceryList implements Serializable {
 
     public List<GroceryItem> findAll() {
         return items;
+    }
+
+    public void moveItemUp(String itemId) {
+        GroceryItem prototype = new GroceryItem(itemId, false, "", "", BigDecimal.valueOf(0.0));
+        int index = items.indexOf(prototype);
+        if (index > 0) {
+            Collections.swap(items, index, index-1);
+        }
+    }
+
+    public void moveItemDown(String itemId) {
+        GroceryItem prototype = new GroceryItem(itemId, false, "", "", BigDecimal.valueOf(0.0));
+        int index = items.indexOf(prototype);
+        System.err.println("Index of " + itemId + " in " + items + " is " + index);
+        if (index < items.size()-1) {
+            Collections.swap(items, index, index+1);
+        }
     }
 }

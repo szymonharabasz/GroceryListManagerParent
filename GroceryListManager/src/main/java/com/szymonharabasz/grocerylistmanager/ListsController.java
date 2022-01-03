@@ -218,4 +218,12 @@ public class ListsController implements Serializable {
                             .getString("generic-error-message"), null));
         }
     }
+
+    public void moveItemUp(String itemId, String listId) {
+        listsService.moveItemUp(itemId, listId);
+    }
+
+    public void moveItemDown(String itemId, String listId) {
+        listsService.moveItemDown(itemId, listId);
+    }
 }
