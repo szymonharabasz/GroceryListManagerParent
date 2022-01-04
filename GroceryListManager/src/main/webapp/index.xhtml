@@ -5,7 +5,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://primefaces.org/ui ">
+>
 <f:metadata>
     <f:event type="preRenderView" listener="#{listsController.checkConfirmed}"/>
     <f:event type="preRenderView" listener="#{listsController.fetchLists}"/>
@@ -91,13 +91,31 @@
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkSave" value="Save list header"/>
-                                <p:commandLink value="" id="linkDelete" styleClass="ui-button-danger">
-                                    <i class="pi pi-trash"></i>
-                                    <p:ajax event="click" listener="#{listsController.removeList(list.id)}"
+                                <p:commandLink value="" id="linkShare">
+                                    <i class="pi pi-share-alt"></i>
+                                    <p:ajax event="click" listener="#{listsController.shareList(list.id)}"
                                             process="@all" update="@all"/>
+                                </p:commandLink>
+                                <p:tooltip for="linkShare" value="Share list"/>
+                                <p:commandLink value="" id="linkDelete" onclick="PF('dlgDeleteList').show()">
+                                    <i class="pi pi-trash"></i>
                                 </p:commandLink>
                                 <p:tooltip for="linkDelete" value="Delete list"/>
                             </div>
+                            <p:dialog header="Delete list?" widgetVar="dlgDeleteList" minHeight="40" width="400" showEffect="fade">
+                                <p class="p-m-0">
+                                    Are you sure you want to delete this list?
+                                </p>
+                                <f:facet name="footer">
+                                    <p:commandButton value="Cancel" onclick="PF('dlgDeleteList').hide()"
+                                                     styleClass="ui-button-flat p-mr-2">
+                                    </p:commandButton>
+                                    <p:commandButton value="Delete" styleClass="ui-button-danger p-mr-2">
+                                        <p:ajax event="click" listener="#{listsController.removeList(list.id)}"
+                                                process="@all" update="@all"/>
+                                    </p:commandButton>
+                                </f:facet>
+                            </p:dialog>
                         </div>
                         <div>
                             <p:dataView value="#{list.items}" var="item" rendered="#{list.expanded}">
@@ -139,7 +157,7 @@
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkMoveItemDown" value="Move item down"/>
-                                            <p:commandLink rendered="#{!item.edited}" value="" id = "linkEditItem">
+                                            <p:commandLink rendered="#{!item.edited}" value="" id="linkEditItem">
                                                 <i class="pi pi-pencil"></i>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.editItem(item.id)}"
@@ -153,14 +171,26 @@
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkSaveItem" value="Save item"/>
-                                            <p:commandLink value="" id="linkDeleteItem">
+                                            <p:commandLink value="" id="linkDeleteItem" onclick="PF('dlgDeleteItem').show()">
                                                 <i class="pi pi-trash"></i>
-                                                <p:ajax event="click"
-                                                        listener="#{listsController.removeItem(item.id)}"
-                                                        process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkDeleteItem" value="Delete item"/>
                                         </div>
+                                        <p:dialog header="Delete item?" widgetVar="dlgDeleteItem" minHeight="40" width="400" showEffect="fade">
+                                            <p class="p-m-0">
+                                                Are you sure you want to delete this item?
+                                            </p>
+                                            <f:facet name="footer">
+                                                <p:commandButton value="Cancel" onclick="PF('dlgDeleteItem').hide()"
+                                                                 styleClass="ui-button-flat p-mr-2">
+                                                </p:commandButton>
+                                                <p:commandButton value="Delete" styleClass="ui-button-danger p-mr-2">
+                                                    <p:ajax event="click"
+                                                            listener="#{listsController.removeItem(item.id)}"
+                                                            process="@all" update="@all"/>
+                                                </p:commandButton>
+                                            </f:facet>
+                                        </p:dialog>
                                     </div>
                                 </p:dataViewListItem>
                             </p:dataView>

@@ -34,7 +34,7 @@ public class ListsController implements Serializable {
     private final Date creationDate = new Date();
     private List<GroceryListView> lists = new ArrayList<>();
     private String greeting;
-    private Logger logger = Logger.getLogger(ListsController.class.getName());
+    private final Logger logger = Logger.getLogger(ListsController.class.getName());
 
     @Inject
     public ListsController(
