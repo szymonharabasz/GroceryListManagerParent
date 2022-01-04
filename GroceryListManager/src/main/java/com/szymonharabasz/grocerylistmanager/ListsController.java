@@ -7,6 +7,7 @@ import com.szymonharabasz.grocerylistmanager.service.ListsService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 import com.szymonharabasz.grocerylistmanager.view.GroceryItemView;
 import com.szymonharabasz.grocerylistmanager.view.GroceryListView;
+import org.primefaces.PrimeFaces;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -33,7 +34,10 @@ public class ListsController implements Serializable {
     private final FacesContext facesContext;
     private final Date creationDate = new Date();
     private List<GroceryListView> lists = new ArrayList<>();
+    private List<GroceryListView> listsToShare = new ArrayList<>();
+    private List<GroceryListView> listsNotToShare = new ArrayList<>();
     private String greeting;
+    private String shareNickname;
     private final Logger logger = Logger.getLogger(ListsController.class.getName());
 
     @Inject
@@ -59,11 +63,45 @@ public class ListsController implements Serializable {
         this.lists = lists;
     }
 
+    public List<GroceryListView> getListsToShare() {
+        return listsToShare;
+    }
+
+    public void setListsToShare(List<GroceryListView> listsToShare) {
+        this.listsToShare = listsToShare;
+    }
+
+    public List<GroceryListView> getListsNotToShare() {
+        return listsNotToShare;
+    }
+
+    public void setListsNotToShare(List<GroceryListView> listsNotToShare) {
+        this.listsNotToShare = listsNotToShare;
+    }
+
     public String getGreeting() {
         return greeting;
     }
 
     public void setGreeting(String greeting) { this.greeting = greeting; }
+
+    public String getShareNickname() {
+        return shareNickname;
+    }
+
+    public void setShareNickname(String shareNickname) {
+        this.shareNickname = shareNickname;
+    }
+
+    public void openDlgShareList(String listId) {
+        listsToShare = lists.stream().filter(list -> Objects.equals(list.getId(), listId)).collect(Collectors.toList());
+        listsNotToShare = lists.stream().filter(list -> !Objects.equals(list.getId(), listId)).collect(Collectors.toList());
+        PrimeFaces.current().executeScript("PF('dlgShareLists').show()");
+    }
+
+    public void hideDlgShareList(String listId) {
+        PrimeFaces.current().executeScript("PF('dlgShareLists').hide()");
+    }
 
     public void editList(String id) {
         findList(id).ifPresent(list -> list.setEdited(true));

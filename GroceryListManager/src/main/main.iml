@@ -38,5 +38,6 @@
     <orderEntry type="library" name="Maven: jakarta.nosql.mapping:mapping-document:1.0.0-b3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" name="Maven: com.codepoetics:protonpack:1.16" level="project" />
+    <orderEntry type="library" name="Maven: org.primefaces:primefaces:10.0.0" level="project" />
   </component>
 </module>
