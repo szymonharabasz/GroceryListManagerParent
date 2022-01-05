@@ -117,6 +117,10 @@ public class ListsController implements Serializable {
         return linkToShare;
     }
 
+    public boolean isLinkToShareVisible() {
+        return linkToShare != null && !linkToShare.isEmpty();
+    }
+
     public void openDlgShareList(String listId) {
         listsToShare = lists.stream().filter(list -> Objects.equals(list.getId(), listId)).collect(Collectors.toList());
         listsNotToShare = lists.stream().filter(list -> !Objects.equals(list.getId(), listId)).collect(Collectors.toList());

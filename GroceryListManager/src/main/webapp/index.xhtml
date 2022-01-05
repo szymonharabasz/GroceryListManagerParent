@@ -14,6 +14,7 @@
 <h:head>
     <title>Grocery List Manager</title>
     <h:outputStylesheet library="css" name="index.css?#{listsController.creationDate}"/>
+    <h:outputScript library="js" name="clipboard.js#{listsController.creationDate}"/>
 </h:head>
 <h:body>
     <div class="ui-g">
@@ -207,12 +208,15 @@
                 </p:dataViewListItem>
             </p:dataView>
             <p:dialog header="Share list" widgetVar="dlgShareLists" minHeight="40" width="400" showEffect="fade">
-                <h:form>
-                    <div class="ui-g-5">
-                        <p:outputLabel styleClass="ui-g-12" for="textNickname" value="Your nickname"/>
+                <h:form id="formShare">
+                    <div class="ui-g-12">
+                        <p:outputLabel for="textNickname" value="Your nickname" style="font-weight: bold; font-size: smaller"/>
                     </div>
-                    <div class="ui-g-7">
-                        <p:inputText styleClass="ui-g-12" id="textNickname" value="#{listsController.shareNickname}"/>
+                    <div class="ui-g-12">
+                        <p:inputText id="textNickname" value="#{listsController.shareNickname}"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:outputLabel value="Lists to share:" style="font-weight: bold; font-size: smaller"/>
                     </div>
                     <p:dataView id="dvListstoShare" value="#{listsController.listsToShare}" var="listToShare"
                                 varStatus="statusToShare" layout="list">
@@ -232,6 +236,9 @@
                             </div>
                         </p:dataViewListItem>
                     </p:dataView>
+                    <div class="ui-g-12">
+                        <p:outputLabel value="Share additional list:"  style="font-weight: bold; font-size: smaller"/>
+                    </div>
                     <div class="ui-g-11">
                         <p:selectOneMenu rendered="#{listsController.listsNotToShare.size() > 0}" id="selListsNotToShare" value="#{listsController.toBecomeShared}">
                             <f:selectItems value="#{listsController.listsNotToShare}"
@@ -263,7 +270,13 @@
 <!--                    </f:facet>-->
                     </div>
                     <div class="ui-g-12">
-                        <p:outputLabel value="Share this link: #{listsController.linkToShare}"/>
+                        <p:outputLabel value="Share this link:" rendered="#{listsController.linkToShareVisible}"  style="font-weight: bold; font-size: smaller"/>
+                    </div>
+                    <div class="ui-g-12" style="float: right">
+                        <p:inputText id="txtLinkToShare" style="width: 75%" readonly="true" value="#{listsController.linkToShare}" rendered="#{listsController.linkToShareVisible}"/>
+                        <p:commandButton style="width: 25%" value="Copy" rendered="#{listsController.linkToShareVisible}" onclick="copy()">
+                            <p:ajax process="@none" update="@none"/>
+                        </p:commandButton>
                     </div>
                 </h:form>
             </p:dialog>
