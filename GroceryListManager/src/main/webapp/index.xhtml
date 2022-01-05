@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
@@ -13,8 +14,8 @@
 </f:metadata>
 <h:head>
     <title>Grocery List Manager</title>
-    <h:outputStylesheet library="css" name="index.css?#{listsController.creationDate}"/>
-    <h:outputScript library="js" name="clipboard.js#{listsController.creationDate}"/>
+    <h:outputStylesheet name="css/index.css?#{listsController.creationDate}"/>
+    <h:outputScript name="js/clipboard.js#{listsController.creationDate}"/>
 </h:head>
 <h:body>
     <div class="ui-g">
@@ -274,9 +275,10 @@
                     </div>
                     <div class="ui-g-12" style="float: right">
                         <p:inputText id="txtLinkToShare" style="width: 75%" readonly="true" value="#{listsController.linkToShare}" rendered="#{listsController.linkToShareVisible}"/>
-                        <p:commandButton style="width: 25%" value="Copy" rendered="#{listsController.linkToShareVisible}" onclick="copy()">
-                            <p:ajax process="@none" update="@none"/>
+                        <p:commandButton id="btnCopy" style="width: 25%" value="Copy" rendered="#{listsController.linkToShareVisible}">
                         </p:commandButton>
+                        <pe:clipboard id="clipCopy" trigger="btnCopy" action="copy" target="txtLinkToShare">
+                        </pe:clipboard>
                     </div>
                 </h:form>
             </p:dialog>
