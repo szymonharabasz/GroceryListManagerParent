@@ -30,6 +30,10 @@ public class GroceryListView implements Serializable {
         this.expanded = true;
     }
 
+    public GroceryListView(String id) {
+        this(id, "", "", new Date());
+    }
+
     public GroceryListView(GroceryList list) {
         this(list.getId(), list.getName(), list.getDescription(), list.getLastModified());
         this.items = list.getItems().stream().map(GroceryItemView::new).collect(Collectors.toList());
@@ -50,13 +54,13 @@ public class GroceryListView implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GroceryListView that = (GroceryListView) o;
-        return name.equals(that.name);
+        GroceryListView listView = (GroceryListView) o;
+        return Objects.equals(id, listView.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     public String getId() {

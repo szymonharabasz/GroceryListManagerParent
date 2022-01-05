@@ -2,8 +2,10 @@ package com.szymonharabasz.grocerylistmanager;
 
 import com.codepoetics.protonpack.StreamUtils;
 import com.szymonharabasz.grocerylistmanager.domain.GroceryList;
+import com.szymonharabasz.grocerylistmanager.domain.SharedBundle;
 import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.service.ListsService;
+import com.szymonharabasz.grocerylistmanager.service.SharedBundleService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 import com.szymonharabasz.grocerylistmanager.view.GroceryItemView;
 import com.szymonharabasz.grocerylistmanager.view.GroceryListView;
@@ -16,6 +18,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.enterprise.SecurityContext;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,28 +32,36 @@ import java.util.stream.Collectors;
 public class ListsController implements Serializable {
     private final ListsService listsService;
     private final UserService userService;
+    private final SharedBundleService sharedBundleService;
     private final SecurityContext securityContext;
     private final ExternalContext externalContext;
     private final FacesContext facesContext;
+    private final ServletContext servletContext;
     private final Date creationDate = new Date();
     private List<GroceryListView> lists = new ArrayList<>();
     private List<GroceryListView> listsToShare = new ArrayList<>();
     private List<GroceryListView> listsNotToShare = new ArrayList<>();
     private String greeting;
     private String shareNickname;
+    private String toBecomeShared;
+    private String linkToShare;
     private final Logger logger = Logger.getLogger(ListsController.class.getName());
 
     @Inject
     public ListsController(
             ListsService listsService,
             UserService userService,
+            SharedBundleService sharedBundleService,
             FacesContext facesContext,
+            ServletContext servletContext,
             SecurityContext securityContext
     ) {
         this.listsService = listsService;
         this.userService = userService;
+        this.sharedBundleService = sharedBundleService;
         this.facesContext = facesContext;
         this.externalContext = facesContext.getExternalContext();
+        this.servletContext = servletContext;
         this.securityContext = securityContext;
         this.greeting = "Yellow";
     }
@@ -72,6 +83,7 @@ public class ListsController implements Serializable {
     }
 
     public List<GroceryListView> getListsNotToShare() {
+        System.err.println("Lists not to share " + listsNotToShare);
         return listsNotToShare;
     }
 
@@ -93,6 +105,18 @@ public class ListsController implements Serializable {
         this.shareNickname = shareNickname;
     }
 
+    public String getToBecomeShared() {
+        return toBecomeShared;
+    }
+
+    public void setToBecomeShared(String toBecomeShared) {
+        this.toBecomeShared = toBecomeShared;
+    }
+
+    public String getLinkToShare() {
+        return linkToShare;
+    }
+
     public void openDlgShareList(String listId) {
         listsToShare = lists.stream().filter(list -> Objects.equals(list.getId(), listId)).collect(Collectors.toList());
         listsNotToShare = lists.stream().filter(list -> !Objects.equals(list.getId(), listId)).collect(Collectors.toList());
@@ -101,6 +125,21 @@ public class ListsController implements Serializable {
 
     public void hideDlgShareList(String listId) {
         PrimeFaces.current().executeScript("PF('dlgShareLists').hide()");
+    }
+
+    public void removeListFromShare(String listId) {
+        listsToShare = listsToShare.stream().filter(list -> !Objects.equals(listId, list.getId())).collect(Collectors.toList());
+        listsNotToShare = lists.stream().filter(list -> !listsToShare.contains(list)).collect(Collectors.toList());
+    }
+
+    public void addListToShare() {
+        System.err.println("List to become shared " + this.toBecomeShared);
+        System.err.println("Lists to share before: " + listsToShare);
+        System.err.println("Lists not to share before: " + listsNotToShare);
+        listsNotToShare = listsNotToShare.stream().filter(list -> !Objects.equals(toBecomeShared, list.getId())).collect(Collectors.toList());
+        listsToShare = lists.stream().filter(list -> !listsNotToShare.contains(list)).collect(Collectors.toList());
+        System.err.println("Lists to share after: " + listsToShare);
+        System.err.println("Lists not to share after: " + listsNotToShare);
     }
 
     public void editList(String id) {
@@ -263,5 +302,13 @@ public class ListsController implements Serializable {
 
     public void moveItemDown(String itemId, String listId) {
         listsService.moveItemDown(itemId, listId);
+    }
+
+    public void shareList() {
+        String newBundleId = UUID.randomUUID().toString();
+        sharedBundleService.save(new SharedBundle(newBundleId, shareNickname,
+                listsToShare.stream().map(GroceryListView::getId).collect(Collectors.toList())));
+        linkToShare = System.getProperty("HOST", "https://localhost:8182/") +
+                servletContext.getContextPath() + "/shared.xhtml?id=" + newBundleId;
     }
 }

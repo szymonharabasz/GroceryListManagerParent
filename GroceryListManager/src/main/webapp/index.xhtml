@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
 <f:metadata>
     <f:event type="preRenderView" listener="#{listsController.checkConfirmed}"/>
@@ -102,7 +103,8 @@
                                 </p:commandLink>
                                 <p:tooltip for="linkDelete" value="Delete list"/>
                             </div>
-                            <p:dialog header="Delete list?" widgetVar="dlgDeleteList" minHeight="40" width="400" showEffect="fade">
+                            <p:dialog header="Delete list?" widgetVar="dlgDeleteList" minHeight="40" width="400"
+                                      showEffect="fade">
                                 <p class="p-m-0">
                                     Are you sure you want to delete this list?
                                 </p>
@@ -112,46 +114,6 @@
                                     </p:commandButton>
                                     <p:commandButton value="Delete" styleClass="ui-button-danger p-mr-2">
                                         <p:ajax event="click" listener="#{listsController.removeList(list.id)}"
-                                                process="@all" update="@all"/>
-                                    </p:commandButton>
-                                </f:facet>
-                            </p:dialog>
-                            <p:dialog header="Share list" widgetVar="dlgShareLists" minHeight="40" width="400" showEffect="fade">
-                                <div class="ui-g-5">
-                                    <p:outputLabel styleClass="ui-g-12" for="textNickname" value="Your nickname"/>
-                                </div>
-                                <div class="ui-g-7">
-                                    <p:inputText styleClass="ui-g-12" id="textNickname" value="#{listsController.shareNickname}"/>
-                                </div>
-                                <div class="ui-g-10">
-                                    <p:outputLabel value="#{list.name}"/>
-                                </div>
-                                <div class="ui-g-2">
-                                    <p:commandLink value="" id="linkDontShare">
-                                        <i class="pi pi-times"></i>
-                                        <p:ajax event="click" listener="#{listsController.removeListFromShare(list.id)}"
-                                                process="@all" update="@all"/>
-                                    </p:commandLink>
-                                    <p:tooltip for="linkDontShare" value="Don't share this list"/>
-                                </div>
-                                <div class="ui-g-10">
-                                    <p:outputLabel value="#{list.name}"/>
-                                </div>
-                                <div class="ui-g-2">
-                                    <p:commandLink value="" id="linkAddToShare">
-                                        <i class="pi pi-plus"></i>
-                                        <p:ajax event="click" listener="#{listsController.addListToShare(list.id)}"
-                                                process="@all" update="@all"/>
-                                    </p:commandLink>
-                                    <p:tooltip for="linkAddToShare" value="Share this list"/>
-                                </div>
-                                <f:facet name="footer">
-                                    <p:commandButton value="Cancel" styleClass="ui-button-flat p-mr-2">
-                                        <p:ajax event="click" listener="#{listsController.hideDlgShareList}"
-                                                process="@all" update="@all"/>
-                                    </p:commandButton>
-                                    <p:commandButton value="Share" styleClass="ui-button p-mr-2">
-                                        <p:ajax event="click" listener="#{listsController.shareList(list.id)}"
                                                 process="@all" update="@all"/>
                                     </p:commandButton>
                                 </f:facet>
@@ -211,12 +173,14 @@
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkSaveItem" value="Save item"/>
-                                            <p:commandLink value="" id="linkDeleteItem" onclick="PF('dlgDeleteItem').show()">
+                                            <p:commandLink value="" id="linkDeleteItem"
+                                                           onclick="PF('dlgDeleteItem').show()">
                                                 <i class="pi pi-trash"></i>
                                             </p:commandLink>
                                             <p:tooltip for="linkDeleteItem" value="Delete item"/>
                                         </div>
-                                        <p:dialog header="Delete item?" widgetVar="dlgDeleteItem" minHeight="40" width="400" showEffect="fade">
+                                        <p:dialog header="Delete item?" widgetVar="dlgDeleteItem" minHeight="40"
+                                                  width="400" showEffect="fade">
                                             <p class="p-m-0">
                                                 Are you sure you want to delete this item?
                                             </p>
@@ -242,6 +206,67 @@
                     </h:form>
                 </p:dataViewListItem>
             </p:dataView>
+            <p:dialog header="Share list" widgetVar="dlgShareLists" minHeight="40" width="400" showEffect="fade">
+                <h:form>
+                    <div class="ui-g-5">
+                        <p:outputLabel styleClass="ui-g-12" for="textNickname" value="Your nickname"/>
+                    </div>
+                    <div class="ui-g-7">
+                        <p:inputText styleClass="ui-g-12" id="textNickname" value="#{listsController.shareNickname}"/>
+                    </div>
+                    <p:dataView id="dvListstoShare" value="#{listsController.listsToShare}" var="listToShare"
+                                varStatus="statusToShare" layout="list">
+                        <p:dataViewListItem>
+                            <div class="ui-g-11">
+                                <p:outputLabel value="#{listToShare.name}"/>
+                            </div>
+                            <div class="ui-g-1" style="text-align: right">
+                                <p:commandLink value="" id="linkDontShare">
+                                    <i class="pi pi-times"></i>
+                                    <p:ajax event="click"
+                                            listener="#{listsController.removeListFromShare(listToShare.id)}"
+                                            process="@form"
+                                            update="@form"/>
+                                </p:commandLink>
+                                <p:tooltip for="linkDontShare" value="Don't share this list"/>
+                            </div>
+                        </p:dataViewListItem>
+                    </p:dataView>
+                    <div class="ui-g-11">
+                        <p:selectOneMenu rendered="#{listsController.listsNotToShare.size() > 0}" id="selListsNotToShare" value="#{listsController.toBecomeShared}">
+                            <f:selectItems value="#{listsController.listsNotToShare}"
+                                           var="listToBecomeShared" itemValue="#{listToBecomeShared.id}"
+                                           itemLabel="#{listToBecomeShared.name}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="ui-g-1" style="text-align: right">
+                        <p:commandLink rendered="#{listsController.listsNotToShare.size() > 0}" value="" id="linkAddToShare">
+                            <i class="pi pi-plus"></i>
+                            <p:ajax event="click" listener="#{listsController.addListToShare()}"
+                                    process="@form"
+                                    update="@form"/>
+                        </p:commandLink>
+                        <p:tooltip for="linkAddToShare" value="Share this list"/>
+                    </div>
+                    <div class="ui-g-12">
+<!--                    <f:facet name="footer">-->
+                        <p:commandButton value="Cancel" styleClass="ui-button-flat p-mr-2"
+                                         style="float: right">
+                            <p:ajax event="click" listener="#{listsController.hideDlgShareList}"
+                                    process="@form" update="@form"/>
+                        </p:commandButton>
+                        <p:commandButton value="Share" styleClass="ui-button p-mr-2"
+                                         style="float: right">
+                            <p:ajax event="click" listener="#{listsController.shareList}"
+                                    process="@form" update="@form"/>
+                        </p:commandButton>
+<!--                    </f:facet>-->
+                    </div>
+                    <div class="ui-g-12">
+                        <p:outputLabel value="Share this link: #{listsController.linkToShare}"/>
+                    </div>
+                </h:form>
+            </p:dialog>
             <div class="ui-g-12">
                 <h:form>
                     <p:commandLink value="Add new list">
