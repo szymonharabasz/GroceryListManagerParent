@@ -5,6 +5,7 @@ import jakarta.nosql.mapping.Entity;
 import jakarta.nosql.mapping.Id;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity("SharedBundle")
@@ -45,4 +46,17 @@ public class SharedBundle {
         return listIds.indexOf(listId);
     }
 
+    public void moveListIdUp(String listId) {
+        int index = listIds.indexOf(listId);
+        if (index > 0) {
+            Collections.swap(listIds, index, index-1);
+        }
+    }
+
+    public void moveListIdDown(String listId) {
+        int index = listIds.indexOf(listId);
+        if (index < listIds.size()-1) {
+            Collections.swap(listIds, index, index+1);
+        }
+    }
 }

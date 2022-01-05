@@ -162,6 +162,12 @@ public class ListsController implements Serializable {
     }
 
     public void collapse(String id) {
+
+        if (findList(id).isPresent()) {
+            System.err.println("List " + id + " is present");
+        } else {
+            System.err.println("List " + id + " is not present");
+        }
         findList(id).ifPresent(list -> list.setExpanded(false));
     }
 

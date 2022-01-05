@@ -6,16 +6,16 @@ import com.szymonharabasz.grocerylistmanager.service.SharedBundleService;
 import com.szymonharabasz.grocerylistmanager.view.GroceryListView;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Named
-@RequestScoped
-public class SharedBacking {
+@SessionScoped
+public class SharedBacking implements Serializable {
     private String id;
     private String from;
     private List<GroceryListView> lists = new ArrayList<>();
@@ -55,8 +55,49 @@ public class SharedBacking {
                         Comparator.comparingInt(l -> bundle.getIndexOfListId(l.getId()))
                 )
                 .map(list -> {
-                    return new GroceryListView(list);
+                    GroceryListView listView = new GroceryListView(list);
+                    findList(list.getId()).ifPresent(oldListView -> {
+                        listView.setExpanded(oldListView.isExpanded());
+                        listView.setEdited(oldListView.isEdited());
+                        listView.setItems(StreamUtils.zip(
+                                oldListView.getItems().stream(),
+                                listView.getItems().stream(),
+                                (oldItemView, newItemView) -> {
+                                    newItemView.setEdited(oldItemView.isEdited());
+                                    return newItemView;
+                                }
+                        ).collect(Collectors.toList()));
+                    });
+                    return listView;
                 }).collect(Collectors.toList())
         );
     }
+
+    private Optional<GroceryListView> findList(String id) {
+        return lists.stream().filter(list -> Objects.equals(list.getId(), id)).findAny();
+    }
+
+
+    public void expand(String id) {
+        findList(id).ifPresent(list -> list.setExpanded(true));
+    }
+
+    public void collapse(String id) {
+
+        if (findList(id).isPresent()) {
+            System.err.println("List " + id + " is present");
+        } else {
+            System.err.println("List " + id + " is not present");
+        }
+        findList(id).ifPresent(list -> list.setExpanded(false));
+    }
+
+    public void moveUp(String listId) {
+        sharedBundleService.findById(id).ifPresent(bundle -> sharedBundleService.moveUp(bundle, listId));
+    }
+
+    public void moveDown(String listId) {
+        sharedBundleService.findById(id).ifPresent(bundle -> sharedBundleService.moveDown(bundle, listId));
+    }
+
 }

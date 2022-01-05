@@ -32,4 +32,12 @@ public class SharedBundleService {
     public void save(SharedBundle bundle) {
         repository.save(bundle);
     }
+
+    public void moveUp(SharedBundle bundle, String listId) {
+        bundle.moveListIdUp(listId);
+    }
+
+    public void moveDown(SharedBundle bundle, String listId) {
+        bundle.moveListIdDown(listId);
+    }
 }

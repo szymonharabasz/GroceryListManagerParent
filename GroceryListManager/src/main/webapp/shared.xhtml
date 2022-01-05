@@ -47,25 +47,25 @@
                             <div class="ui-g-4" style="text-align: right">
                                 <p:commandLink value="" id="linkUp">
                                     <i class="pi pi-angle-up"></i>
-                                    <p:ajax event="click" listener="#{listsController.moveUp(list.id)}"
+                                    <p:ajax event="click" listener="#{sharedBacking.moveUp(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkUp" value="Move list up"/>
                                 <p:commandLink value="" id="linkDown">
                                     <i class="pi pi-angle-down"></i>
-                                    <p:ajax event="click" listener="#{listsController.moveDown(list.id)}"
+                                    <p:ajax event="click" listener="#{sharedBacking.moveDown(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkDown" value="Move list down"/>
                                 <p:commandLink rendered="#{!list.expanded}" value="" id="linkExpand">
                                     <i class="pi pi-caret-down"></i>
-                                    <p:ajax event="click" listener="#{listsController.expand(list.id)}"
+                                    <p:ajax event="click" listener="#{sharedBacking.expand(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkExpand" value="Expand list"/>
                                 <p:commandLink rendered="#{list.expanded}" value="" id="linkCollapse">
                                     <i class="pi pi-caret-up"></i>
-                                    <p:ajax event="click" listener="#{listsController.collapse(list.id)}"
+                                    <p:ajax event="click" listener="#{sharedBacking.collapse(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkCollapse" value="Collapse list"/>
