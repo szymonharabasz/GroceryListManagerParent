@@ -6,7 +6,6 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
 <f:metadata>
     <f:event type="preRenderView" listener="#{listsController.checkConfirmed}"/>
@@ -57,50 +56,50 @@
                             </div>
                             <div class="ui-g-4" style="text-align: right">
                                 <p:commandLink value="" id="linkUp">
-                                    <i class="pi pi-angle-up"></i>
+                                    <i class="pi pi-angle-up"/>
                                     <p:ajax event="click" listener="#{listsController.moveUp(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkUp" value="Move list up"/>
                                 <p:commandLink value="" id="linkDown">
-                                    <i class="pi pi-angle-down"></i>
+                                    <i class="pi pi-angle-down"/>
                                     <p:ajax event="click" listener="#{listsController.moveDown(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkDown" value="Move list down"/>
                                 <p:commandLink rendered="#{!list.expanded}" value="" id="linkExpand">
-                                    <i class="pi pi-caret-down"></i>
+                                    <i class="pi pi-caret-down"/>
                                     <p:ajax event="click" listener="#{listsController.expand(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkExpand" value="Expand list"/>
                                 <p:commandLink rendered="#{list.expanded}" value="" id="linkCollapse">
-                                    <i class="pi pi-caret-up"></i>
+                                    <i class="pi pi-caret-up"/>
                                     <p:ajax event="click" listener="#{listsController.collapse(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkCollapse" value="Collapse list"/>
                                 <p:commandLink rendered="#{!list.edited}" value="" id="linkEdit"
                                                label="btnEdit#{list.id}">
-                                    <i class="pi pi-pencil"></i>
+                                    <i class="pi pi-pencil"/>
                                     <p:ajax event="click" listener="#{listsController.editList(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkEdit" value="Edit list header"/>
                                 <p:commandLink rendered="#{list.edited}" value="" id="linkSave">
-                                    <i class="pi pi-save"></i>
+                                    <i class="pi pi-save"/>
                                     <p:ajax event="click" listener="#{listsController.saveList(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkSave" value="Save list header"/>
                                 <p:commandLink value="" id="linkShare">
-                                    <i class="pi pi-share-alt"></i>
+                                    <i class="pi pi-share-alt"/>
                                     <p:ajax event="click" listener="#{listsController.openDlgShareList(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkShare" value="Share list"/>
                                 <p:commandLink value="" id="linkDelete" onclick="PF('dlgDeleteList').show()">
-                                    <i class="pi pi-trash"></i>
+                                    <i class="pi pi-trash"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkDelete" value="Delete list"/>
                             </div>
@@ -147,28 +146,28 @@
                                         </div>
                                         <div class="ui-g-3 ui-g-offset-1" style="text-align: right">
                                             <p:commandLink value="" id="linkMoveItemUp">
-                                                <i class="pi pi-angle-up"></i>
+                                                <i class="pi pi-angle-up"/>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.moveItemUp(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkMoveItemUp" value="Move item up"/>
                                             <p:commandLink value="" id="linkMoveItemDown">
-                                                <i class="pi pi-angle-down"></i>
+                                                <i class="pi pi-angle-down"/>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.moveItemDown(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkMoveItemDown" value="Move item down"/>
                                             <p:commandLink rendered="#{!item.edited}" value="" id="linkEditItem">
-                                                <i class="pi pi-pencil"></i>
+                                                <i class="pi pi-pencil"/>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.editItem(item.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkEditItem" value="Edit item"/>
                                             <p:commandLink rendered="#{item.edited}" value="" id="linkSaveItem">
-                                                <i class="pi pi-save"></i>
+                                                <i class="pi pi-save"/>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.saveItem(item.id, list.id)}"
                                                         process="@all" update="@all"/>
@@ -176,7 +175,7 @@
                                             <p:tooltip for="linkSaveItem" value="Save item"/>
                                             <p:commandLink value="" id="linkDeleteItem"
                                                            onclick="PF('dlgDeleteItem').show()">
-                                                <i class="pi pi-trash"></i>
+                                                <i class="pi pi-trash"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkDeleteItem" value="Delete item"/>
                                         </div>
@@ -226,7 +225,7 @@
                             </div>
                             <div class="ui-g-1" style="text-align: right">
                                 <p:commandLink value="" id="linkDontShare">
-                                    <i class="pi pi-times"></i>
+                                    <i class="pi pi-times"/>
                                     <p:ajax event="click"
                                             listener="#{listsController.removeListFromShare(listToShare.id)}"
                                             process="@form"
@@ -248,7 +247,7 @@
                     </div>
                     <div class="ui-g-1" style="text-align: right">
                         <p:commandLink rendered="#{listsController.listsNotToShare.size() > 0}" value="" id="linkAddToShare">
-                            <i class="pi pi-plus"></i>
+                            <i class="pi pi-plus"/>
                             <p:ajax event="click" listener="#{listsController.addListToShare()}"
                                     process="@form"
                                     update="@form"/>
