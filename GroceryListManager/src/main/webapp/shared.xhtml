@@ -4,10 +4,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://primefaces.org/ui ">
 <f:metadata>
-    <f:viewParam name="id" value="#{sharedBacking.id}"/>
+    <f:viewParam name="id" value="#{sharedBacking.bundleId}"/>
     <f:event type="preRenderView" listener="#{sharedBacking.fetchLists}"/>
 </f:metadata>
 <h:head>
@@ -46,25 +47,25 @@
                             </div>
                             <div class="ui-g-4" style="text-align: right">
                                 <p:commandLink value="" id="linkUp">
-                                    <i class="pi pi-angle-up"></i>
+                                    <i class="pi pi-angle-up"/>
                                     <p:ajax event="click" listener="#{sharedBacking.moveUp(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkUp" value="Move list up"/>
                                 <p:commandLink value="" id="linkDown">
-                                    <i class="pi pi-angle-down"></i>
+                                    <i class="pi pi-angle-down"/>
                                     <p:ajax event="click" listener="#{sharedBacking.moveDown(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkDown" value="Move list down"/>
                                 <p:commandLink rendered="#{!list.expanded}" value="" id="linkExpand">
-                                    <i class="pi pi-caret-down"></i>
+                                    <i class="pi pi-caret-down"/>
                                     <p:ajax event="click" listener="#{sharedBacking.expand(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkExpand" value="Expand list"/>
                                 <p:commandLink rendered="#{list.expanded}" value="" id="linkCollapse">
-                                    <i class="pi pi-caret-up"></i>
+                                    <i class="pi pi-caret-up"/>
                                     <p:ajax event="click" listener="#{sharedBacking.collapse(list.id)}"
                                             process="@all" update="@all"/>
                                 </p:commandLink>
@@ -77,28 +78,29 @@
                                     <div class="ui-g-12">
                                         <div class="ui-g-1">
                                             <p:selectBooleanCheckbox value="#{item.done}">
-                                                <p:ajax listener="#{listsController.toggleDone(item.id, list.id)}"
+                                                <p:ajax listener="#{sharedBacking.toggleDone(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:selectBooleanCheckbox>
                                         </div>
                                         <div class="ui-g-5">
-                                            <h:outputText value="#{item.name}" rendered="#{!item.edited}"/></div>
-                                        <div class="ui-g-1">
-                                            <h:outputText value="#{item.quantity}" rendered="#{!item.edited}"/>
+                                            <h:outputText value="#{item.name}"/>
                                         </div>
                                         <div class="ui-g-1">
-                                            <h:outputText value="#{item.unit}" rendered="#{!item.edited}"/>
+                                            <h:outputText value="#{item.quantity}"/>
+                                        </div>
+                                        <div class="ui-g-1">
+                                            <h:outputText value="#{item.unit}"/>
                                         </div>
                                         <div class="ui-g-3 ui-g-offset-1" style="text-align: right">
                                             <p:commandLink value="" id="linkMoveItemUp">
-                                                <i class="pi pi-angle-up"></i>
+                                                <i class="pi pi-angle-up"/>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.moveItemUp(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkMoveItemUp" value="Move item up"/>
                                             <p:commandLink value="" id="linkMoveItemDown">
-                                                <i class="pi pi-angle-down"></i>
+                                                <i class="pi pi-angle-down"/>
                                                 <p:ajax event="click"
                                                         listener="#{listsController.moveItemDown(item.id, list.id)}"
                                                         process="@all" update="@all"/>

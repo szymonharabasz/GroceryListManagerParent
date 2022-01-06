@@ -3,9 +3,9 @@ package com.szymonharabasz.grocerylistmanager;
 import com.codepoetics.protonpack.StreamUtils;
 import com.szymonharabasz.grocerylistmanager.service.ListsService;
 import com.szymonharabasz.grocerylistmanager.service.SharedBundleService;
+import com.szymonharabasz.grocerylistmanager.view.GroceryItemView;
 import com.szymonharabasz.grocerylistmanager.view.GroceryListView;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Named
 @SessionScoped
 public class SharedBacking implements Serializable {
-    private String id;
+    private String bundleId;
     private String from;
     private List<GroceryListView> lists = new ArrayList<>();
 
@@ -33,12 +33,12 @@ public class SharedBacking implements Serializable {
         this(null, null);
     }
 
-    public String getId() {
-        return id;
+    public String getBundleId() {
+        return bundleId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setBundleId(String bundleId) {
+        this.bundleId = bundleId;
     }
 
     public String getFrom() {
@@ -50,7 +50,7 @@ public class SharedBacking implements Serializable {
     }
 
     public void fetchLists() {
-        sharedBundleService.findById(id).ifPresent(bundle -> lists = listsService.getLists().stream()
+        sharedBundleService.findById(bundleId).ifPresent(bundle -> lists = listsService.getLists().stream()
                 .filter(list -> bundle.hasListId(list.getId())).sorted(
                         Comparator.comparingInt(l -> bundle.getIndexOfListId(l.getId()))
                 )
@@ -83,21 +83,28 @@ public class SharedBacking implements Serializable {
     }
 
     public void collapse(String id) {
-
-        if (findList(id).isPresent()) {
-            System.err.println("List " + id + " is present");
-        } else {
-            System.err.println("List " + id + " is not present");
-        }
         findList(id).ifPresent(list -> list.setExpanded(false));
     }
 
     public void moveUp(String listId) {
-        sharedBundleService.findById(id).ifPresent(bundle -> sharedBundleService.moveUp(bundle, listId));
+        sharedBundleService.findById(bundleId).ifPresent(bundle -> sharedBundleService.moveUp(bundle, listId));
     }
 
     public void moveDown(String listId) {
-        sharedBundleService.findById(id).ifPresent(bundle -> sharedBundleService.moveDown(bundle, listId));
+        sharedBundleService.findById(bundleId).ifPresent(bundle -> sharedBundleService.moveDown(bundle, listId));
+    }
+
+    public void toggleDone(String itemId, String listId) {
+        findItem(itemId).ifPresent(item -> listsService.saveItem(item.toGroceryItem(), listId));
+    }
+
+    private Optional<GroceryItemView> findItem(String id) {
+        for (GroceryListView list : lists) {
+            for (GroceryItemView item : list.getItems()) {
+                if (Objects.equals(item.getId(), id)) return Optional.of(item);
+            }
+        }
+        return Optional.empty();
     }
 
 }
