@@ -33,6 +33,10 @@ public class Initializer {
         this.hashingService = hashingService;
     }
 
+    public Initializer() {
+        this(null, null, null);
+    }
+
     @PostConstruct
     public void loadLists() {
         String listId1 = generateID();

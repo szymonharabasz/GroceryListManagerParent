@@ -12,7 +12,12 @@ import java.util.logging.Logger;
 @WebFilter(filterName = "logHeadersFilter", urlPatterns = "/*")
 public class LogHeadersFilter implements Filter {
     private final Logger logger = Logger.getLogger(LogHeadersFilter.class.getName());
-    
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (!((HttpServletRequest) servletRequest).getRequestURI().contains("resource")) {
@@ -41,5 +46,10 @@ public class LogHeadersFilter implements Filter {
             }
             logger.info(responseHeadersBuilder.toString());
         }
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }

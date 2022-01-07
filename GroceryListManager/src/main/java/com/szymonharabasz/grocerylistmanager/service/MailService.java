@@ -51,6 +51,7 @@ public class MailService {
         String link = getLinkPrefix() + "/reset-password.xhtml?user=" + userTokenWrapper.getUser().getName() +
                 "&token=" + userTokenWrapper.getToken();
 
+        System.err.println("Link is " + link);
         String to = userTokenWrapper.getUser().getEmail();
         String subject = resourceBundle.getString("password-reset-mail-title");
         String content = String.format(resourceBundle.getString("password-reset-mail-format"), userTokenWrapper.getUser().getName(), link, link);
@@ -68,7 +69,9 @@ public class MailService {
 
         message.setContent(multipart);
 
+        System.err.println("Before sending message");
         Transport.send(message);
+        System.err.println("Before sending message");
 
     }
 

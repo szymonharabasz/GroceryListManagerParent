@@ -18,6 +18,10 @@ public class CleanupTokensService {
         this.userService = userService;
     }
 
+    public CleanupTokensService() {
+        this(null);
+    }
+
     @Schedule(minute = "*/10", hour = "*", persistent = false)
     public void clesanupTokens() {
         logger.info("Cleanning up tokens...");

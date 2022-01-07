@@ -14,10 +14,20 @@ public class SameSiteFilter implements Filter {
     private final Logger logger = Logger.getLogger(SameSiteFilter.class.getName());
 
     @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         logger.info("SAME SITE FILTER IS APPLIED");
         chain.doFilter(request, response);
         addSameSiteCookieAttribute((HttpServletResponse) response); // add SameSite=strict cookie attribute
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
     private void addSameSiteCookieAttribute(HttpServletResponse response) {

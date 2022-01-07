@@ -23,6 +23,10 @@ public class EmailConfirmTokenInvalidateService {
         this.userService = userService;
     }
 
+    public EmailConfirmTokenInvalidateService() {
+        this(null);
+    }
+
     public void sendPasswordReset(@ObservesAsync User user) {
         timerService.createTimer(48 * 60 * 60 * 1000, user);
     }

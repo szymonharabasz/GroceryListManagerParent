@@ -253,6 +253,7 @@ public class ListsController implements Serializable {
 
     public void fetchLists() {
         logger.warning("Lists are fetched.");
+        logger.warning("TEST_VARIABLE = " + servletContext.getInitParameter("testVariable"));
         currenUser().ifPresent(user -> lists = listsService.getLists().stream()
                 .filter(list -> user.hasListId(list.getId())).sorted(
                         Comparator.comparingInt(l -> user.getIndexOfListId(l.getId()))
