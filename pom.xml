@@ -35,7 +35,7 @@
             </dependency>
             <dependency>
                 <groupId>fish.payara.extras</groupId>
-                <artifactId>payara-embedded-all</artifactId>
+                <artifactId>payara-embedded-web</artifactId>
                 <version>5.2021.9</version>
             </dependency>
             <dependency>
