@@ -2,22 +2,21 @@ package com.szymonharabasz.grocerylistmanager;
 
 import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.faces.context.FacesContext;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ConfirmationEmailBackingTest {
     @Mock
     UserService mockUserService;
@@ -32,14 +31,13 @@ public class ConfirmationEmailBackingTest {
     private final String token = "token";
     private final String tokenHash = "tokenHash";
 
-    @BeforeEach
-    void init() {
+    @Before
+    public void init() {
         this.user = new User(userId, userName, passwordHash, email);
     }
 
     @Test
-    @DisplayName("User is confirmed if all works correctly")
-    void userConfirmedIfAllCorrect() {
+    public void userConfirmedIfAllCorrect() {
         when(mockUserService.findByConfirmationToken(token)).thenReturn(Optional.of(user));
 
         ConfirmationEmailBacking confirmationEmailBacking = new ConfirmationEmailBacking(mockUserService, mockFacesContext);

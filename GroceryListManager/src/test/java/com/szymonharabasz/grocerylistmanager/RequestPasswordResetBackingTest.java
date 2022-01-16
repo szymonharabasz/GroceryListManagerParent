@@ -7,12 +7,11 @@ import com.szymonharabasz.grocerylistmanager.service.HashingService;
 import com.szymonharabasz.grocerylistmanager.service.RandomService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 import com.szymonharabasz.grocerylistmanager.service.UserTokenWrapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 import javax.faces.context.ExternalContext;
@@ -22,11 +21,11 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RequestPasswordResetBackingTest {
     @Mock
     RandomService mockRandomService;
@@ -49,16 +48,15 @@ public class RequestPasswordResetBackingTest {
     User user;
     Salt salt;
 
-    @BeforeEach
-    void init() {
+    @Before
+    public void init() {
         this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
         this.salt = new Salt(userId, saltBytes);
         user.setPasswordResetTokenHash(new ExpirablePayload(mockHashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
     }
 
     @Test
-    @DisplayName("Does not change app state if non-existing e-mail is prrovided")
-    void dontChangeStateOnWrongEmail() {
+    public void dontChangeStateOnWrongEmail() {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 
         RequestPasswordResetBacking requestPasswordResetBacking = new RequestPasswordResetBacking(
@@ -70,12 +68,11 @@ public class RequestPasswordResetBackingTest {
         requestPasswordResetBacking.setEmail(user.getEmail());
         requestPasswordResetBacking.request();
         verifyNoInteractions(mockEvent);
-        verifyNoMoreInteractions(mockUserService);
+        verify(mockUserService, times(0)).save(user);
     }
 
     @Test
-    @DisplayName("Throws IllegalStateException when good email is provided, but salt was not found")
-    void throwOnGoodEmailButBadSalt() {
+    public void throwOnGoodEmailButBadSalt() {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.empty());
 
@@ -91,8 +88,7 @@ public class RequestPasswordResetBackingTest {
     }
 
     @Test
-    @DisplayName("Saves correct information about requested password change if all is correct")
-    void savePasswordResetInformationIfAllCorrect() {
+    public void savePasswordResetInformationIfAllCorrect() {
         when(mockUserService.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(mockHashingService.findSaltByUserId(user.getId())).thenReturn(Optional.of(salt));
         when(mockHashingService.createHash(token, salt)).thenReturn(tokenHash);

@@ -6,12 +6,11 @@ import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.service.HashingService;
 import com.szymonharabasz.grocerylistmanager.service.RandomService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 import javax.faces.context.ExternalContext;
@@ -21,10 +20,9 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class RegisterBackingTest {
     @Mock
     UserService mockUserService;
@@ -48,15 +46,14 @@ public class RegisterBackingTest {
     User user;
     Salt salt;
 
-    @BeforeEach
-    void init() {
+    @Before
+    public void init() {
         this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
         this.salt = new Salt(userId, saltBytes);
     }
 
     @Test
-    @DisplayName("Registers a new user")
-    void registersNewUser() {
+    public void registersNewUser() {
         when(mockHashingService.createSalt()).thenReturn(salt);
         when(mockHashingService.createHash(password, salt)).thenReturn(passwordHash);
         when(mockUserService.createUser(salt.getUserId(), userName, passwordHash, email))

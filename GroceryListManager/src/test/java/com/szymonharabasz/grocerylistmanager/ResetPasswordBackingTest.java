@@ -5,12 +5,11 @@ import com.szymonharabasz.grocerylistmanager.domain.Salt;
 import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.service.HashingService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -20,11 +19,11 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ResetPasswordBackingTest {
 
     @Mock
@@ -40,15 +39,14 @@ public class ResetPasswordBackingTest {
     User user;
     Salt salt;
 
-    @BeforeEach
-    void init() {
+    @Before
+    public void init() {
         this.user = new User(userId, userName, "oldPasswordHash", "user@example.com");
         this.salt = new Salt(userId, saltBytes);
         user.setPasswordResetTokenHash(new ExpirablePayload(mockHashingService.createHash("token", salt), Date.from(Instant.now().plus(Duration.ofMinutes(30)))));
     }
 
     @Test
-    @DisplayName("Reset password saves user with a new password")
     public void resetPasswordSavesUser() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
@@ -67,7 +65,6 @@ public class ResetPasswordBackingTest {
     }
 
     @Test
-    @DisplayName("Does not change state if user is not found")
     public void doesNotChangeStateIfUserNotFound() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.empty());
@@ -76,11 +73,10 @@ public class ResetPasswordBackingTest {
         resetPasswordBacking.setUserName(userName);
         resetPasswordBacking.load();
 
-        verifyNoMoreInteractions(mockUserService);
+        verify(mockUserService, times(0)).save(user);
     }
 
     @Test
-    @DisplayName("Does not change state if token hash is wrong")
     public void doesNotChangeStateOnWrongTokenHash() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));
@@ -91,12 +87,11 @@ public class ResetPasswordBackingTest {
         resetPasswordBacking.setToken("wrong");
         resetPasswordBacking.load();
 
-        verifyNoMoreInteractions(mockUserService);
+        verify(mockUserService, times(0)).save(user);
 
     }
 
     @Test
-    @DisplayName("Throws the IllegalStateException if salt is not found")
     public void throwsIfSaltNotFound() {
 
         when(mockUserService.findByName(userName)).thenReturn(Optional.of(user));

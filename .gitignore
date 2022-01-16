@@ -8,3 +8,13 @@
 domain1
 system-properties
 system-properties.local
+/scripts/add-user.cli
+/scripts/authentication.cli
+/scripts/cli.properties
+/scripts/configure-oidc.cli
+/scripts/disable-http.cli
+/scripts/https.cli
+/scripts/logging.cli
+/scripts/logging-log4j-appender.cli
+/scripts/mp-config.cli
+/scripts/os-https.cli
