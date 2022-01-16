@@ -30,13 +30,20 @@ import java.util.stream.Collectors;
 @Named
 @SessionScoped
 public class ListsController implements Serializable {
-    private final ListsService listsService;
-    private final UserService userService;
-    private final SharedBundleService sharedBundleService;
-    private final SecurityContext securityContext;
-    private final ExternalContext externalContext;
-    private final FacesContext facesContext;
-    private final ServletContext servletContext;
+    @Inject
+    private ListsService listsService;
+    @Inject
+    private UserService userService;
+    @Inject
+    private SharedBundleService sharedBundleService;
+    @Inject
+    private SecurityContext securityContext;
+    @Inject
+    private ExternalContext externalContext;
+    @Inject
+    private FacesContext facesContext;
+    @Inject
+    private ServletContext servletContext;
     private final Date creationDate = new Date();
     private List<GroceryListView> lists = new ArrayList<>();
     private List<GroceryListView> listsToShare = new ArrayList<>();
@@ -47,12 +54,12 @@ public class ListsController implements Serializable {
     private String linkToShare;
     private final Logger logger = Logger.getLogger(ListsController.class.getName());
 
-    @Inject
     public ListsController(
             ListsService listsService,
             UserService userService,
             SharedBundleService sharedBundleService,
             FacesContext facesContext,
+            ExternalContext externalContext,
             ServletContext servletContext,
             SecurityContext securityContext
     ) {
@@ -60,10 +67,14 @@ public class ListsController implements Serializable {
         this.userService = userService;
         this.sharedBundleService = sharedBundleService;
         this.facesContext = facesContext;
-        this.externalContext = facesContext.getExternalContext();
+        this.externalContext = externalContext;
         this.servletContext = servletContext;
         this.securityContext = securityContext;
         this.greeting = "Yellow";
+    }
+
+    public ListsController() {
+        this(null, null, null, null, null, null, null);
     }
 
     public List<GroceryListView> getLists() {
