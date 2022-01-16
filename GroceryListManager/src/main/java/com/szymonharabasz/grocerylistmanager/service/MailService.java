@@ -5,14 +5,12 @@ import com.szymonharabasz.grocerylistmanager.domain.User;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.servlet.ServletContext;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-@Named
 @ApplicationScoped
 public class MailService {
 

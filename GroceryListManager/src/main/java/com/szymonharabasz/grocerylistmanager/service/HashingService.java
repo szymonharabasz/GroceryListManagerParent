@@ -4,11 +4,12 @@ import com.szymonharabasz.grocerylistmanager.Utils;
 import com.szymonharabasz.grocerylistmanager.domain.Salt;
 import com.szymonharabasz.grocerylistmanager.domain.SaltRepository;
 
+import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseType;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -16,14 +17,14 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Optional;
 
-@Named
 @ApplicationScoped
 public class HashingService {
-    private final SaltRepository saltRepository;
+    @Inject
+    @Database(DatabaseType.DOCUMENT)
+    private SaltRepository saltRepository;
     private final SecureRandom random = new SecureRandom();
     private SecretKeyFactory factory;
 
-    @Inject
     public HashingService(SaltRepository saltRepository) {
         try {
             this.factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");

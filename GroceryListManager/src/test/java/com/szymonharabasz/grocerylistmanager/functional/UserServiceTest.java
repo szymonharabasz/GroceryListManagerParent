@@ -1,6 +1,10 @@
 package com.szymonharabasz.grocerylistmanager.functional;
 
+import com.szymonharabasz.grocerylistmanager.DocumentCollectionManagerProducer;
+import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.domain.UserRepository;
+import com.szymonharabasz.grocerylistmanager.service.UserService;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -10,8 +14,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
-import org.jnosql.artemis.Database;
-import org.jnosql.artemis.DatabaseType;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -22,9 +24,9 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class UserServiceTest {
-    @Inject
-    @Database(DatabaseType.DOCUMENT)
-    public UserRepository repo;
+
+   @Inject
+   UserService userService;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -36,7 +38,12 @@ public class UserServiceTest {
                 .resolve().withTransitivity().asFile();
 
         archive.addAsLibraries(libs);
-        archive.addPackages(false, Filters.exclude(".*Test.*"), UserRepository.class.getPackage());
+        Package domain = UserRepository.class.getPackage();
+        String domainName = domain.getName();
+        String parentName = domainName.substring(0, domainName.lastIndexOf('.'));
+        Package parant = Package.getPackage(parentName);
+        archive.addPackages(true, Filters.exclude(".*Test.*"), parant);
+        archive.addClass(DocumentCollectionManagerProducer.class);
         archive.addAsResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
 
 
@@ -46,8 +53,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void repositoryCreated() {
-        assertNotNull(repo);
+    public void userServiceCreated() {
+        assertNotNull(userService);
+    }
+
+    @Test
+    public void canSaveToRepository() {
+        userService.save(new User("1", "User", "pwd", "user@example.com"));
     }
 
     @Test

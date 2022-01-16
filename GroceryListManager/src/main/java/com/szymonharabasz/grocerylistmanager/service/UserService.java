@@ -10,7 +10,6 @@ import org.jnosql.artemis.document.DocumentTemplate;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -19,16 +18,16 @@ import java.util.Optional;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
-@Named
 @ApplicationScoped
 public class UserService {
-
-    @Database(DatabaseType.DOCUMENT)
-    private final UserRepository repository;
-    private final DocumentTemplate documentTemplate;
-    private final RandomService randomService;
-
     @Inject
+    @Database(DatabaseType.DOCUMENT)
+    private UserRepository repository;
+    @Inject
+    private DocumentTemplate documentTemplate;
+    @Inject
+    private RandomService randomService;
+
     public UserService(UserRepository repository, DocumentTemplate documentTemplate, RandomService randomService) {
         this.repository = repository;
         this.documentTemplate = documentTemplate;

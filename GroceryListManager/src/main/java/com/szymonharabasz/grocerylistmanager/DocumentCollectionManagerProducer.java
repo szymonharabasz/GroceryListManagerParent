@@ -17,9 +17,9 @@ public class DocumentCollectionManagerProducer {
 
     private static final String COLLECTION = "groceries";
 
-    private DocumentConfiguration configuration;
+    private DocumentConfiguration<?> configuration;
 
-    private DocumentCollectionManagerFactory managerFactory;
+    private DocumentCollectionManagerFactory<?> managerFactory;
 
     @PostConstruct
     public void init() {

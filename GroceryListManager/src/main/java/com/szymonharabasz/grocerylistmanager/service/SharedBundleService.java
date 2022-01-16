@@ -7,16 +7,14 @@ import org.jnosql.artemis.DatabaseType;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.Optional;
 
-@Named
 @RequestScoped
 public class SharedBundleService {
+    @Inject
     @Database(DatabaseType.DOCUMENT)
     private SharedBundleRepository repository;
 
-    @Inject
     public SharedBundleService(SharedBundleRepository repository) {
         this.repository = repository;
     }
