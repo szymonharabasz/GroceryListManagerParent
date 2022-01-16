@@ -3,10 +3,10 @@ package com.szymonharabasz.grocerylistmanager.service;
 import com.szymonharabasz.grocerylistmanager.domain.ExpirablePayload;
 import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.domain.UserRepository;
-import jakarta.nosql.document.DocumentQuery;
-import jakarta.nosql.mapping.Database;
-import jakarta.nosql.mapping.DatabaseType;
-import jakarta.nosql.mapping.document.DocumentTemplate;
+import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.document.DocumentTemplate;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static jakarta.nosql.document.DocumentQuery.select;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 @Named
 @ApplicationScoped

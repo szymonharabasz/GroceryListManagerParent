@@ -2,7 +2,7 @@ package com.szymonharabasz.grocerylistmanager.service;
 
 import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.domain.UserRepository;
-import jakarta.nosql.mapping.document.DocumentTemplate;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

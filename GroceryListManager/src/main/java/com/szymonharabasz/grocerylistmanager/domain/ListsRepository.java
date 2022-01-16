@@ -1,6 +1,6 @@
 package com.szymonharabasz.grocerylistmanager.domain;
 
-import jakarta.nosql.mapping.Repository;
+import org.jnosql.artemis.Repository;
 
 import java.util.List;
 import java.util.Optional;

@@ -5,22 +5,16 @@ import com.szymonharabasz.grocerylistmanager.domain.User;
 import com.szymonharabasz.grocerylistmanager.interceptors.RedirectToConfirmation;
 import com.szymonharabasz.grocerylistmanager.service.RandomService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.enterprise.event.Event;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.enterprise.SecurityContext;
-import java.io.IOException;
 import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Named
 public class RequestNewConfirmationBacking {

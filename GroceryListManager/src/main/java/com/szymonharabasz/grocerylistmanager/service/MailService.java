@@ -3,7 +3,6 @@ package com.szymonharabasz.grocerylistmanager.service;
 import com.szymonharabasz.grocerylistmanager.domain.User;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 import javax.inject.Named;

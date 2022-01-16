@@ -1,5 +1,5 @@
 package com.szymonharabasz.grocerylistmanager.domain;
 
-import jakarta.nosql.mapping.Repository;
+import org.jnosql.artemis.Repository;
 
 public interface SaltRepository extends Repository<Salt, String> {}

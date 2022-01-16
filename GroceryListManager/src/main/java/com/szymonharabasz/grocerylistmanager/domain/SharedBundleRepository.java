@@ -1,6 +1,6 @@
 package com.szymonharabasz.grocerylistmanager.domain;
 
-import jakarta.nosql.mapping.Repository;
+import org.jnosql.artemis.Repository;
 
 public interface SharedBundleRepository extends Repository<SharedBundle, String> {
 }

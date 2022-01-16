@@ -7,17 +7,12 @@ import com.szymonharabasz.grocerylistmanager.service.HashingService;
 import com.szymonharabasz.grocerylistmanager.service.UserService;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Named
 @RequestScoped
@@ -31,13 +26,11 @@ public class ResetPasswordBacking implements Serializable {
 
     private final UserService userService;
     private final HashingService hashingService;
-    private final ExternalContext externalContext;
 
     @Inject
     public ResetPasswordBacking(UserService userService, HashingService hashingService, FacesContext facesContext) {
         this.userService = userService;
         this.hashingService = hashingService;
-        this.externalContext = facesContext.getExternalContext();
     }
 
     public void load() {

@@ -18,7 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <junit.version>4.13.2</junit.version>
+        <junit.version>4.12</junit.version>
+        <jnosql.version>0.0.7</jnosql.version>
     </properties>
 
     <dependencyManagement>
@@ -74,14 +75,21 @@
                 <version>2.0.0</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jnosql.mapping</groupId>
-                <artifactId>mapping-document</artifactId>
-                <version>1.0.0-b3</version>
+                <groupId>org.jnosql.artemis</groupId>
+                <artifactId>artemis-document</artifactId>
+                <version>${jnosql.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.jnosql.communication</groupId>
+                <groupId>org.jnosql.diana</groupId>
                 <artifactId>mongodb-driver</artifactId>
-                <version>1.0.0-b3</version>
+                <version>${jnosql.version}</version>
+                <exclusions>
+                    <!-- Strange dependency on a test tool: to be removed? -->
+                    <exclusion>
+                        <groupId>de.flapdoodle.embed</groupId>
+                        <artifactId>de.flapdoodle.embed.mongo</artifactId>                   
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>

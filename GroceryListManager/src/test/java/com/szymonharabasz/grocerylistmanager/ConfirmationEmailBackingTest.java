@@ -29,7 +29,6 @@ public class ConfirmationEmailBackingTest {
     private final String passwordHash = "passwordHash";
     private final String email = "user@example.com";
     private final String token = "token";
-    private final String tokenHash = "tokenHash";
 
     @Before
     public void init() {

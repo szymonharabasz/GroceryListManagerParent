@@ -3,9 +3,8 @@ package com.szymonharabasz.grocerylistmanager.service;
 import com.szymonharabasz.grocerylistmanager.domain.GroceryItem;
 import com.szymonharabasz.grocerylistmanager.domain.GroceryList;
 import com.szymonharabasz.grocerylistmanager.domain.ListsRepository;
-import jakarta.nosql.mapping.Database;
-import jakarta.nosql.mapping.DatabaseType;
-import jakarta.nosql.mapping.document.DocumentTemplate;
+import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,8 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static jakarta.nosql.document.DocumentQuery.select;
-
 @Named
 @ApplicationScoped
 public class ListsService {
@@ -29,9 +26,6 @@ public class ListsService {
     @Inject
     @Database(DatabaseType.DOCUMENT)
     private ListsRepository repository;
-
-    @Inject
-    private DocumentTemplate template;
 
     public List<GroceryList> getLists() {
         return repository.findAll();

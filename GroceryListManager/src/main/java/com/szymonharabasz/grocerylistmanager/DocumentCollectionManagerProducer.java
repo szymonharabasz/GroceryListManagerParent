@@ -1,10 +1,10 @@
 package com.szymonharabasz.grocerylistmanager;
 
-import jakarta.nosql.Settings;
-import jakarta.nosql.document.DocumentCollectionManager;
-import jakarta.nosql.document.DocumentCollectionManagerFactory;
-import jakarta.nosql.document.DocumentConfiguration;
-import org.eclipse.jnosql.communication.mongodb.document.MongoDBDocumentConfiguration;
+import org.jnosql.diana.api.Settings;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentCollectionManagerFactory;
+import org.jnosql.diana.api.document.DocumentConfiguration;
+import org.jnosql.diana.mongodb.document.MongoDBDocumentConfiguration;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

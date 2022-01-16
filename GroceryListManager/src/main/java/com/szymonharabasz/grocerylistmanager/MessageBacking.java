@@ -2,7 +2,6 @@ package com.szymonharabasz.grocerylistmanager;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,7 +13,6 @@ import java.util.ResourceBundle;
 public class MessageBacking {
 
     private final FacesContext facesContext;
-    private final ExternalContext externalContext;
 
     private String type;
 
@@ -25,7 +23,6 @@ public class MessageBacking {
     @Inject
     public MessageBacking(FacesContext facesContext) {
         this.facesContext = facesContext;
-        this.externalContext = facesContext.getExternalContext();
     }
 
     public void load() {

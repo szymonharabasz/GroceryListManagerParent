@@ -5,6 +5,7 @@
 **/.DS_Store
 **/*.jar
 **/*.war
+.vscode
 domain1
 system-properties
 system-properties.local

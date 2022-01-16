@@ -6,13 +6,10 @@ import com.szymonharabasz.grocerylistmanager.service.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Named
 @RequestScoped

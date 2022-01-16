@@ -2,15 +2,13 @@ package com.szymonharabasz.grocerylistmanager.service;
 
 import com.szymonharabasz.grocerylistmanager.domain.SharedBundle;
 import com.szymonharabasz.grocerylistmanager.domain.SharedBundleRepository;
-import com.szymonharabasz.grocerylistmanager.view.GroceryListView;
-import jakarta.nosql.mapping.Database;
-import jakarta.nosql.mapping.DatabaseType;
+import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseType;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Named
 @RequestScoped

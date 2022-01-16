@@ -24,7 +24,6 @@ public class PasswordResetTokenInvalidateService {
     }
 
     public void sendPasswordReset(@ObservesAsync UserTokenWrapper userTokenWrapper) {
-        String passwordResetTokenHash = userTokenWrapper.getToken();
         timerService.createTimer(30 * 60 * 1000, userTokenWrapper);
     }
 

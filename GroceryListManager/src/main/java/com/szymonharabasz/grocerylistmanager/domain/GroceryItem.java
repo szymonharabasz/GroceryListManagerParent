@@ -1,14 +1,12 @@
 package com.szymonharabasz.grocerylistmanager.domain;
 
-import jakarta.nosql.mapping.Column;
-import jakarta.nosql.mapping.Entity;
-import jakarta.nosql.mapping.Id;
+import org.jnosql.artemis.Column;
+import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.Id;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
-
-import static org.apache.commons.lang3.ObjectUtils.compare;
 
 @Entity("GroceryItem")
 public class GroceryItem implements Serializable {
