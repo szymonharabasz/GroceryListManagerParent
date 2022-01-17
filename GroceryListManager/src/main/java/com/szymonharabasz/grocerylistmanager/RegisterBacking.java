@@ -18,9 +18,12 @@ import javax.validation.constraints.*;
 @Named
 @RequestScoped
 public class RegisterBacking {
-    private final UserService userService;
-    private final HashingService hashingService;
-    private final Event<User> userRegistrationEvent;
+    @Inject
+    private UserService userService;
+    @Inject
+    private HashingService hashingService;
+    @Inject
+    private Event<User> userRegistrationEvent;
 
     @NotBlank
     @Alphanumeric
@@ -38,11 +41,14 @@ public class RegisterBacking {
     @Unique(name = "email", message = "this e-mail address has been already regustered")
     private String email;
 
-    @Inject
     public RegisterBacking(UserService userService, HashingService hashingService, Event<User> userRegistrationEvent) {
         this.userService = userService;
         this.hashingService = hashingService;
         this.userRegistrationEvent = userRegistrationEvent;
+    }
+
+    public RegisterBacking() {
+        this(null, null, null);
     }
 
     public String getUsername() {

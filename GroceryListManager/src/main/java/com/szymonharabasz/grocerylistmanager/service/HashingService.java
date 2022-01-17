@@ -6,6 +6,9 @@ import com.szymonharabasz.grocerylistmanager.domain.SaltRepository;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentQuery;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.enterprise.context.ApplicationScoped;
@@ -15,13 +18,19 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Map;
 import java.util.Optional;
+import org.bson.types.Binary;
+
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 @ApplicationScoped
 public class HashingService {
     @Inject
     @Database(DatabaseType.DOCUMENT)
     private SaltRepository saltRepository;
+    @Inject
+    DocumentCollectionManager collectionManager;
     private final SecureRandom random = new SecureRandom();
     private SecretKeyFactory factory;
 
@@ -38,7 +47,13 @@ public class HashingService {
 
     public void save(Salt salt) { saltRepository.save(salt); }
     public Optional<Salt> findSaltByUserId(String userId) {
-        return saltRepository.findById(userId);
+       // return saltRepository.findById(userId);
+        DocumentQuery query = select().from("Salt").where("_id").eq(userId).build();
+        return collectionManager.singleResult(query).map(entity -> {
+            Map<String, Object> map = entity.toMap();
+            Binary b = (Binary)map.get("salt");
+            return new Salt((String)map.get("_id"), b.getData());
+        });
     }
     public Salt createSalt() {
         byte[] saltBytes = new byte[16];

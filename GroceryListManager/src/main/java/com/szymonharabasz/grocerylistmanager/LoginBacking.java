@@ -21,22 +21,30 @@ import java.util.ResourceBundle;
 @Named
 @RequestScoped
 public class LoginBacking {
-    private final SecurityContext securityContext;
-    private final FacesContext facesContext;
-    private final ExternalContext externalContext;
-    private final UserService userService;
-    private final HashingService hashingService;
+    @Inject
+    private SecurityContext securityContext;
+    @Inject
+    private FacesContext facesContext;
+    @Inject
+    private ExternalContext externalContext;
+    @Inject
+    private UserService userService;
+    @Inject
+    private HashingService hashingService;
 
     private String username;
     private String password;
 
-    @Inject
-    public LoginBacking(SecurityContext securityContext, FacesContext facesContext, UserService userService, HashingService hashingService) {
+    public LoginBacking(SecurityContext securityContext, FacesContext facesContext, ExternalContext externalContext, UserService userService, HashingService hashingService) {
         this.securityContext = securityContext;
         this.facesContext = facesContext;
-        this.externalContext = facesContext.getExternalContext();
+        this.externalContext = externalContext;
         this.userService = userService;
         this.hashingService = hashingService;
+    }
+
+    public LoginBacking() {
+        this(null, null, null, null, null);
     }
 
     public String getUsername() {
@@ -60,6 +68,7 @@ public class LoginBacking {
             String passwordHash = hashingService.createHash(password, salt);
             UsernamePasswordCredential usernamePasswordCredential = new UsernamePasswordCredential(username, passwordHash);
             AuthenticationParameters authenticationParameters = AuthenticationParameters.withParams().credential(usernamePasswordCredential);
+            /*
             HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
             HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
             AuthenticationStatus authenticationStatus = securityContext.authenticate(request, response, authenticationParameters);
@@ -78,7 +87,11 @@ public class LoginBacking {
                     break;
                 case NOT_DONE:
             }
-        });
+                  */
+
+        }
+        
+        );
     }
     private void redirect(String to) {
         try {

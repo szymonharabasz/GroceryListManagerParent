@@ -58,10 +58,6 @@ public class UserServiceTest {
         archive.addPackages(true, Filters.exclude(".*Test.*"), parant);
         archive.addClass(DocumentCollectionManagerProducer.class);
         archive.addAsResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
-
-
-        System.err.println("Deployed archove " + archive.toString(true));
-
         return archive;
     }
 
