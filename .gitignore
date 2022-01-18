@@ -19,3 +19,4 @@ system-properties.local
 /scripts/logging-log4j-appender.cli
 /scripts/mp-config.cli
 /scripts/os-https.cli
+deptree

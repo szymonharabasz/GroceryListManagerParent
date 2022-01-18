@@ -6,8 +6,10 @@ import com.szymonharabasz.grocerylistmanager.domain.SaltRepository;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.document.DocumentEntity;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -45,7 +47,13 @@ public class HashingService {
 
     public HashingService() { this(null); }
 
-    public void save(Salt salt) { saltRepository.save(salt); }
+    public void save(Salt salt) {
+        DocumentEntity documentEntity = DocumentEntity.of("Salt");
+        documentEntity.add(Document.of("_id", salt.getUserId()));
+        documentEntity.add(Document.of("salt", new Binary(salt.getSalt())));
+        collectionManager.update(documentEntity);
+       // saltRepository.save(salt); 
+    }
     public Optional<Salt> findSaltByUserId(String userId) {
        // return saltRepository.findById(userId);
         DocumentQuery query = select().from("Salt").where("_id").eq(userId).build();

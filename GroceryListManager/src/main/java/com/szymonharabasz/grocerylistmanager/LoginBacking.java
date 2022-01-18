@@ -68,7 +68,6 @@ public class LoginBacking {
             String passwordHash = hashingService.createHash(password, salt);
             UsernamePasswordCredential usernamePasswordCredential = new UsernamePasswordCredential(username, passwordHash);
             AuthenticationParameters authenticationParameters = AuthenticationParameters.withParams().credential(usernamePasswordCredential);
-            /*
             HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
             HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
             AuthenticationStatus authenticationStatus = securityContext.authenticate(request, response, authenticationParameters);
@@ -87,11 +86,7 @@ public class LoginBacking {
                     break;
                 case NOT_DONE:
             }
-                  */
-
-        }
-        
-        );
+        });
     }
     private void redirect(String to) {
         try {
