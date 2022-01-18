@@ -7,6 +7,7 @@ import com.szymonharabasz.grocerylistmanager.domain.SaltRepository;
 import com.szymonharabasz.grocerylistmanager.domain.UserRepository;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -34,8 +35,10 @@ import java.net.URL;
 import javax.inject.Inject;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+
 @RunWith(Arquillian.class)
 public class ListsControllerTest {
+    private static final String WEBAPP_SRC = "src/main/webapp";
 
     @Inject
     @Database(DatabaseType.DOCUMENT)
@@ -76,6 +79,18 @@ public class ListsControllerTest {
         Package mainPackage = ListsController.class.getPackage();
         archive.addPackages(true, Filters.exclude(".*Test.*"), mainPackage);
         archive.addAsResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+        archive.addAsWebResource(new File(WEBAPP_SRC + "/index.xhtml"));
+        archive.addAsWebResource(new File(WEBAPP_SRC + "/login.xhtml"));
+        archive.addAsWebInfResource(new File(WEBAPP_SRC + "/WEB-INF/web.xml"));
+        archive.addAsWebInfResource(new File(WEBAPP_SRC + "/WEB-INF/glassfish-web.xml"));
+        archive.addAsWebInfResource(new File(WEBAPP_SRC + "/WEB-INF/faces-config.xml"));
+        // archive.addAsWebResource(WEBAPP_SRC + "/index.xhtml", "index.xhtml");
+       // archive.addAsWebResource(WEBAPP_SRC, "login.xhtml");
+       // archive.addAsWebInfResource(WEBAPP_SRC + "/WEB-INF", "web.xml");
+       // archive.addAsWebInfResource(WEBAPP_SRC + "/WEB-INF", "faces-config.xml");
+       // archive.addAsWebInfResource(WEBAPP_SRC + "/WEB-INF", "glassfish-web.xml");
+        System.err.println("Deployed archove " + archive.toString(true));
+
         return archive;
     }
 
@@ -86,7 +101,7 @@ public class ListsControllerTest {
         collectionManager.delete(deleteSaltsQuery);
     }
 
-    @Before
+   // @Before
     public void registerAndLoginUser() {
         clearTestRepositories();
 
@@ -97,12 +112,14 @@ public class ListsControllerTest {
         registerBacking.register();
     }
 
-    @Test
+    @Test @RunAsClient
     public void loginPage() {
         System.err.println("Deployment URL: " + this.deploymentURL.toString());
+        browser.get(this.deploymentURL.toString() + "/index.xhtml");
+        System.err.println(browser.getPageSource());
     }
 
-    @Test
+    @Test @RunAsClient
     public void twoTimesTwoEqualsFour() {
         assertEquals(4, 2*2);
     }
