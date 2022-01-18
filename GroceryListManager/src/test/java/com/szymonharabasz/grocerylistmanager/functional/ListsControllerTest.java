@@ -24,7 +24,11 @@ import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,6 +39,7 @@ import java.net.URL;
 import javax.inject.Inject;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jboss.arquillian.graphene.Graphene.waitModel;
 
 @RunWith(Arquillian.class)
 public class ListsControllerTest {
@@ -65,6 +70,15 @@ public class ListsControllerTest {
 
     @ArquillianResource
     URL deploymentURL;
+
+    @FindBy(id = "loginForm:textLogin")
+    private WebElement textLogin;
+
+    @FindBy(id = "loginForm:textPassword")
+    private WebElement textPassword;
+
+    @FindBy(id = "loginForm:btnSignin")
+    private WebElement btnSignin;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -116,6 +130,13 @@ public class ListsControllerTest {
     public void loginPage() {
         System.err.println("Deployment URL: " + this.deploymentURL.toString());
         browser.get(this.deploymentURL.toString() + "/index.xhtml");
+        System.err.println(browser.getPageSource());
+        PageFactory.initElements(browser, this);
+        textLogin.sendKeys("NoUser");
+        textPassword.sendKeys("wrongpwd");
+        btnSignin.click();
+        waitModel();
+        System.err.println("=====================");
         System.err.println(browser.getPageSource());
     }
 
