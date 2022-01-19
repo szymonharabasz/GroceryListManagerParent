@@ -83,6 +83,9 @@ public class ListsControllerTest {
     @FindBy(id = "loginForm:messages")
     private WebElement messages;
 
+    @FindBy(id = "labelGreeting")
+    private WebElement labelGreeting;
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive archive = ShrinkWrap.create(WebArchive.class);
@@ -145,7 +148,6 @@ public class ListsControllerTest {
     public void displaysErrorMessageIfWrongPassword() throws InterruptedException {
         System.err.println("Deployment URL: " + this.deploymentURL.toString());
         browser.get(this.deploymentURL.toString() + "/index.xhtml");
-       // System.err.println(browser.getPageSource());
         PageFactory.initElements(browser, this);
         textLogin.sendKeys("NewUser");
         textPassword.sendKeys("N3wUserPas$_");
@@ -153,4 +155,16 @@ public class ListsControllerTest {
         waitModel().until().element(messages).text().contains("Wrong user name or password");
     }
 
+    @Test @RunAsClient
+    public void showsTheHomePageIfCorrectCredentials() throws InterruptedException {
+        System.err.println("Deployment URL: " + this.deploymentURL.toString());
+        browser.get(this.deploymentURL.toString() + "/index.xhtml");
+        PageFactory.initElements(browser, this);
+        textLogin.sendKeys("NewUser");
+        textPassword.sendKeys("N3wUserPas$");
+        btnSignin.click();
+        Thread.sleep(4000);
+        System.err.println(browser.getPageSource());
+        waitModel().until().element(labelGreeting).text().contains("Hello, NewUser");
+    }
 }
