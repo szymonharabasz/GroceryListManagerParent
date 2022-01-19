@@ -80,6 +80,9 @@ public class ListsControllerTest {
     @FindBy(id = "loginForm:btnSignin")
     private WebElement btnSignin;
 
+    @FindBy(id = "loginForm:messages")
+    private WebElement messages;
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive archive = ShrinkWrap.create(WebArchive.class);
@@ -127,23 +130,27 @@ public class ListsControllerTest {
     }
 
     @Test @RunAsClient
-    public void loginPage() throws InterruptedException {
+    public void displaysErrorMessageIfWrongUserName() throws InterruptedException {
         System.err.println("Deployment URL: " + this.deploymentURL.toString());
         browser.get(this.deploymentURL.toString() + "/index.xhtml");
-        System.err.println(browser.getPageSource());
+       // System.err.println(browser.getPageSource());
         PageFactory.initElements(browser, this);
-        textLogin.sendKeys("NewUser");
+        textLogin.sendKeys("NewUser_");
         textPassword.sendKeys("N3wUserPas$");
         btnSignin.click();
-        Thread.sleep(10000);
-        waitModel();
-        System.err.println("=====================");
-        System.err.println(browser.getPageSource());
+        waitModel().until().element(messages).text().contains("Wrong user name or password");
     }
 
     @Test @RunAsClient
-    public void twoTimesTwoEqualsFour() {
-        assertEquals(4, 2*2);
+    public void displaysErrorMessageIfWrongPassword() throws InterruptedException {
+        System.err.println("Deployment URL: " + this.deploymentURL.toString());
+        browser.get(this.deploymentURL.toString() + "/index.xhtml");
+       // System.err.println(browser.getPageSource());
+        PageFactory.initElements(browser, this);
+        textLogin.sendKeys("NewUser");
+        textPassword.sendKeys("N3wUserPas$_");
+        btnSignin.click();
+        waitModel().until().element(messages).text().contains("Wrong user name or password");
     }
 
 }
