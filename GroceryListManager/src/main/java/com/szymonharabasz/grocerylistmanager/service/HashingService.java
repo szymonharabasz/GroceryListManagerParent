@@ -51,12 +51,17 @@ public class HashingService {
         DocumentEntity documentEntity = DocumentEntity.of("Salt");
         documentEntity.add(Document.of("_id", salt.getUserId()));
         documentEntity.add(Document.of("salt", new Binary(salt.getSalt())));
-        collectionManager.update(documentEntity);
+        if (findSaltByUserId(salt.getUserId()).isPresent()) {
+            collectionManager.update(documentEntity);
+        } else {
+            collectionManager.insert(documentEntity);
+        }
        // saltRepository.save(salt); 
     }
     public Optional<Salt> findSaltByUserId(String userId) {
        // return saltRepository.findById(userId);
         DocumentQuery query = select().from("Salt").where("_id").eq(userId).build();
+        System.err.println("Lookin for salt for id " + userId);
         return collectionManager.singleResult(query).map(entity -> {
             Map<String, Object> map = entity.toMap();
             Binary b = (Binary)map.get("salt");

@@ -76,17 +76,17 @@ public class LoginBacking {
                 case SEND_CONTINUE:
                     facesContext.responseComplete();
                     break;
-                case SEND_FAILURE:
-                    facesContext.addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                    "Wrong user name or password", null));
-                    break;
                 case SUCCESS:
                     redirect("/index.xhtml");
                     break;
+                case SEND_FAILURE:
                 case NOT_DONE:
             }
         });
+        facesContext.addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+            "Wrong user name or password", null));
+
     }
     private void redirect(String to) {
         try {

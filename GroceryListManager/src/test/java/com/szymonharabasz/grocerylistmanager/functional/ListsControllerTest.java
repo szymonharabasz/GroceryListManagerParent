@@ -127,14 +127,15 @@ public class ListsControllerTest {
     }
 
     @Test @RunAsClient
-    public void loginPage() {
+    public void loginPage() throws InterruptedException {
         System.err.println("Deployment URL: " + this.deploymentURL.toString());
         browser.get(this.deploymentURL.toString() + "/index.xhtml");
         System.err.println(browser.getPageSource());
         PageFactory.initElements(browser, this);
-        textLogin.sendKeys("NoUser");
-        textPassword.sendKeys("wrongpwd");
+        textLogin.sendKeys("NewUser");
+        textPassword.sendKeys("N3wUserPas$");
         btnSignin.click();
+        Thread.sleep(10000);
         waitModel();
         System.err.println("=====================");
         System.err.println(browser.getPageSource());
