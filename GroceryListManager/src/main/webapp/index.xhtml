@@ -112,7 +112,7 @@
                                     <p:commandButton value="Cancel" onclick="PF('dlgDeleteList').hide()"
                                                      styleClass="ui-button-flat p-mr-2">
                                     </p:commandButton>
-                                    <p:commandButton value="Delete" styleClass="ui-button-danger p-mr-2">
+                                    <p:commandButton id="buttonConfirmDeleteList" value="Delete" styleClass="ui-button-danger p-mr-2">
                                         <p:ajax event="click" listener="#{listsController.removeList(list.id)}"
                                                 process="@all" update="@all"/>
                                     </p:commandButton>

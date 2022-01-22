@@ -21,7 +21,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
@@ -35,7 +34,6 @@ import java.net.URL;
 
 import javax.inject.Inject;
 
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jboss.arquillian.graphene.Graphene.waitModel;
 
 @RunWith(Arquillian.class)

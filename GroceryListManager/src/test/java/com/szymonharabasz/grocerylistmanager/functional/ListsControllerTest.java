@@ -104,6 +104,9 @@ public class ListsControllerTest {
     @FindBy(id = "dataViewLists:0:formLists:linkDelete")
     private WebElement linkDelete;
 
+    @FindBy(id = "dataViewLists:0:formLists:buttonConfirmDeleteList")
+    private WebElement buttonConfirmDeleteList;
+
     public ListsControllerTest() {
         PageFactory.initElements(browser, this);
     }
@@ -172,8 +175,9 @@ public class ListsControllerTest {
         waitModel().until().element(outputName).text().contains("List 1");
         waitModel().until().element(outputDesc).text().contains("First shopping list");
         linkDelete.click();
+        waitModel().until().element(buttonConfirmDeleteList).is().clickable();
+        buttonConfirmDeleteList.click();
         waitModel().until().element(outputName).is().not().visible();
-        Thread.sleep(4000);
     }
 
 }
