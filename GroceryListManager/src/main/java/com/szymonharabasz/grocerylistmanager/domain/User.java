@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.google.common.collect.Streams;
-
 @Entity("User")
 public class User implements Serializable {
     @Id

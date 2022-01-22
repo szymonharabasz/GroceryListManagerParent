@@ -22,17 +22,17 @@
                 <p:outputLabel id="labelGreeting" value="Hello, #{request.userPrincipal.name}"/>
             </h4>
         </div>
-        <h:form styleClass="ui-g-4" style="align-items: center">
-            <p:commandButton ajax="false" action="#{logoutBacking.handleLogout}" value="Logout" style="float: right"/>
+        <h:form id="formLogout" styleClass="ui-g-4" style="align-items: center">
+            <p:commandButton id="btnLogout" ajax="false" action="#{logoutBacking.handleLogout}" value="Logout" style="float: right"/>
         </h:form>
     </div>
     <!--    <p:outputPanel>-->
     <div class="ui-g">
         <div class="ui-g-2"></div>
         <div class="ui-g-8">
-            <p:dataView value="#{listsController.lists}" var="list" varStatus="status" layout="list">
-                <p:dataViewListItem>
-                    <h:form>
+            <p:dataView id="dataViewLists" value="#{listsController.lists}" var="list" varStatus="status" layout="list">
+                <p:dataViewListItem id="dataViewListItemLists">
+                    <h:form id="formLists">
                         <div class="ui-g-12" style="font-weight: bold; background-color: whitesmoke">
                             <div class="ui-g-2">
                                 <h:outputText id="outName#{list.id}" rendered="#{!list.edited}"

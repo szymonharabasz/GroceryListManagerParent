@@ -39,7 +39,7 @@ import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jboss.arquillian.graphene.Graphene.waitModel;
 
 @RunWith(Arquillian.class)
-public class ListsControllerTest {
+public class LoginTest {
     private static final String WEBAPP_SRC = "src/main/webapp";
 
     @Inject
@@ -101,10 +101,7 @@ public class ListsControllerTest {
     @FindBy(id = "dataViewLists:0:formLists:linkSave")
     private WebElement linkSave;
 
-    @FindBy(id = "dataViewLists:0:formLists:linkDelete")
-    private WebElement linkDelete;
-
-    public ListsControllerTest() {
+    public LoginTest() {
         PageFactory.initElements(browser, this);
     }
 
@@ -135,22 +132,24 @@ public class ListsControllerTest {
         return archive;
     }
 
-    void clearTestRepositories() {
-        DocumentDeleteQuery deleteUsersQuery = delete().from("User").where("_id").not().eq("").build();
-        DocumentDeleteQuery deleteSaltsQuery = delete().from("Salt").where("_id").not().eq("").build();
-        collectionManager.delete(deleteUsersQuery);
-        collectionManager.delete(deleteSaltsQuery);
+    @Test @RunAsClient @InSequence(0)
+    public void displaysErrorMessageIfWrongUserName() {
+        System.err.println("Deployment URL: " + this.deploymentURL.toString());
+        browser.get(this.deploymentURL.toString() + "/index.xhtml");
+       // System.err.println(browser.getPageSource());
+        textLogin.sendKeys("NewUser_");
+        textPassword.sendKeys("N3wUserPas$");
+        btnSignin.click();
+        waitModel().until().element(messages).text().contains("Wrong user name or password");
     }
 
-   // @Before
-    public void registerAndLoginUser() {
-        clearTestRepositories();
-
-        registerBacking.setUsername("User");
-        registerBacking.setPassword("pwd");
-        registerBacking.setRepeatPassword("pwd");
-        registerBacking.setEmail("user@example.com");
-        registerBacking.register();
+    @Test @RunAsClient @InSequence(1)
+    public void displaysErrorMessageIfWrongPassword() {
+        browser.get(this.deploymentURL.toString() + "/index.xhtml");
+        textLogin.sendKeys("NewUser");
+        textPassword.sendKeys("N3wUserPas$_");
+        btnSignin.click();
+        waitModel().until().element(messages).text().contains("Wrong user name or password");
     }
 
     @Test @RunAsClient @InSequence(2)
@@ -161,19 +160,4 @@ public class ListsControllerTest {
         btnSignin.click();
         waitModel().until().element(labelGreeting).text().contains("Hello, NewUser");
     }
-
-    @Test @RunAsClient @InSequence(3)
-    public void creatingNewList() throws InterruptedException {
-        linkAddNewList.click();
-        waitModel().until().element(inputName).is().visible();
-        inputName.sendKeys("List 1");
-        inputDesc.sendKeys("First shopping list");
-        linkSave.click();
-        waitModel().until().element(outputName).text().contains("List 1");
-        waitModel().until().element(outputDesc).text().contains("First shopping list");
-        linkDelete.click();
-        waitModel().until().element(outputName).is().not().visible();
-        Thread.sleep(4000);
-    }
-
 }
