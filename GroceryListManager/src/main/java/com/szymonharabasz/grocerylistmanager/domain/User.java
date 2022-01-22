@@ -6,9 +6,14 @@ import org.jnosql.artemis.Id;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.google.common.collect.Streams;
 
 @Entity("User")
 public class User implements Serializable {
@@ -43,7 +48,12 @@ public class User implements Serializable {
     }
 
     public void addListId(String id) {
-        listIds.add(id);
+       // System.err.println("Type of listIds: " + listIds.getClass().getCanonicalName());
+       // listIds.add(id);
+       // Old version of jnosql requires makes the list immutable, so we use immutable techniques
+        listIds = Stream.concat(
+            listIds.stream(), Arrays.asList(id).stream()
+        ).collect(Collectors.toList());
     }
 
     public void removeListId(String id) {

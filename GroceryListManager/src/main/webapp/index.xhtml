@@ -281,8 +281,8 @@
                 </h:form>
             </p:dialog>
             <div class="ui-g-12">
-                <h:form>
-                    <p:commandLink value="Add new list">
+                <h:form id="formAddNewList">
+                    <p:commandLink id="link" value="Add new list">
                         <p:ajax event="click" listener="#{listsController.addList}" process="@all" update="@all"/>
                     </p:commandLink>
                 </h:form>

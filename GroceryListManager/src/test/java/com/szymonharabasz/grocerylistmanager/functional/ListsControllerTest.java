@@ -10,7 +10,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -29,6 +31,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import fish.payara.arquillian.annotation.security.RunAs;
+import java_cup.runtime.virtual_parse_stack;
 
 import static org.junit.Assert.assertEquals;
 
@@ -85,6 +90,13 @@ public class ListsControllerTest {
 
     @FindBy(id = "labelGreeting")
     private WebElement labelGreeting;
+    
+    @FindBy(id = "formAddNewList:link")
+    private WebElement linkAddNewList;
+
+    public ListsControllerTest() {
+        PageFactory.initElements(browser, this);
+    }
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -101,14 +113,13 @@ public class ListsControllerTest {
         archive.addAsResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
         archive.addAsWebResource(new File(WEBAPP_SRC + "/index.xhtml"));
         archive.addAsWebResource(new File(WEBAPP_SRC + "/login.xhtml"));
+        final String finalPageCSS = "/resources/css/form-page.css";
+        final String indexCSS = "/resources/css/index.css";
+        archive.addAsWebResource(new File(WEBAPP_SRC, finalPageCSS), finalPageCSS);
+        archive.addAsWebResource(new File(WEBAPP_SRC, indexCSS), indexCSS);
         archive.addAsWebInfResource(new File(WEBAPP_SRC + "/WEB-INF/web.xml"));
         archive.addAsWebInfResource(new File(WEBAPP_SRC + "/WEB-INF/glassfish-web.xml"));
         archive.addAsWebInfResource(new File(WEBAPP_SRC + "/WEB-INF/faces-config.xml"));
-        // archive.addAsWebResource(WEBAPP_SRC + "/index.xhtml", "index.xhtml");
-       // archive.addAsWebResource(WEBAPP_SRC, "login.xhtml");
-       // archive.addAsWebInfResource(WEBAPP_SRC + "/WEB-INF", "web.xml");
-       // archive.addAsWebInfResource(WEBAPP_SRC + "/WEB-INF", "faces-config.xml");
-       // archive.addAsWebInfResource(WEBAPP_SRC + "/WEB-INF", "glassfish-web.xml");
         System.err.println("Deployed archove " + archive.toString(true));
 
         return archive;
@@ -132,39 +143,39 @@ public class ListsControllerTest {
         registerBacking.register();
     }
 
-    @Test @RunAsClient
-    public void displaysErrorMessageIfWrongUserName() throws InterruptedException {
+    @Test @RunAsClient @InSequence(0)
+    public void displaysErrorMessageIfWrongUserName() {
         System.err.println("Deployment URL: " + this.deploymentURL.toString());
         browser.get(this.deploymentURL.toString() + "/index.xhtml");
        // System.err.println(browser.getPageSource());
-        PageFactory.initElements(browser, this);
         textLogin.sendKeys("NewUser_");
         textPassword.sendKeys("N3wUserPas$");
         btnSignin.click();
         waitModel().until().element(messages).text().contains("Wrong user name or password");
     }
 
-    @Test @RunAsClient
-    public void displaysErrorMessageIfWrongPassword() throws InterruptedException {
-        System.err.println("Deployment URL: " + this.deploymentURL.toString());
+    @Test @RunAsClient @InSequence(1)
+    public void displaysErrorMessageIfWrongPassword() {
         browser.get(this.deploymentURL.toString() + "/index.xhtml");
-        PageFactory.initElements(browser, this);
         textLogin.sendKeys("NewUser");
         textPassword.sendKeys("N3wUserPas$_");
         btnSignin.click();
         waitModel().until().element(messages).text().contains("Wrong user name or password");
     }
 
-    @Test @RunAsClient
-    public void showsTheHomePageIfCorrectCredentials() throws InterruptedException {
-        System.err.println("Deployment URL: " + this.deploymentURL.toString());
+    @Test @RunAsClient @InSequence(2)
+    public void showsTheHomePageIfCorrectCredentials() {
         browser.get(this.deploymentURL.toString() + "/index.xhtml");
-        PageFactory.initElements(browser, this);
         textLogin.sendKeys("NewUser");
         textPassword.sendKeys("N3wUserPas$");
         btnSignin.click();
-        Thread.sleep(4000);
         System.err.println(browser.getPageSource());
         waitModel().until().element(labelGreeting).text().contains("Hello, NewUser");
+    }
+
+    @Test @RunAsClient @InSequence(3)
+    public void clickingOnLinkAddsNewList() throws InterruptedException {
+        linkAddNewList.click();
+        Thread.sleep(4000);
     }
 }
