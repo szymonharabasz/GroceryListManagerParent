@@ -157,20 +157,18 @@ public class ListsControllerTest {
 
     @Test @RunAsClient @InSequence(3)
     public void creatingNewList() throws InterruptedException {
-        // linkAddNewList.click();
-        // waitModel().until().element(inputName).is().visible();
-        // inputName.sendKeys("List 1");
-        // inputDesc.sendKeys("First shopping list");
-        // linkSave.click();
-        // waitModel().until().element(outputName).text().contains("List 1");
-        // waitModel().until().element(outputDesc).text().contains("First shopping list");
         addListAndCheck("List 1", "First shopping list", 0);
-        WebElement outputName = browser.findElement(By.id("dataViewLists:" + 0 + ":formLists:outName"));
+        deleteListAndCheck(0);
+        Thread.sleep(4000);
+    }
+
+    private void deleteListAndCheck(int position) {
+        String outNameId = "dataViewLists:" + position + ":formLists:outName";
+        WebElement outputName = browser.findElement(By.id(outNameId));
         linkDelete.click();
         waitModel().until().element(buttonConfirmDeleteList).is().clickable();
         buttonConfirmDeleteList.click();
         waitModel().until().element(outputName).is().not().visible();
-        Thread.sleep(4000);
     }
 
     private void addListAndCheck(String name, String desc, int position) throws InterruptedException {
