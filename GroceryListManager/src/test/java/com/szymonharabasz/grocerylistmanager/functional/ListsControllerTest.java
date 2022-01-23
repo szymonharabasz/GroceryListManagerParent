@@ -39,6 +39,8 @@ import javax.inject.Inject;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jboss.arquillian.graphene.Graphene.waitModel;
+import static org.jboss.arquillian.graphene.Graphene.waitAjax;
+import static org.jboss.arquillian.graphene.Graphene.guardAjax;
 
 @RunWith(Arquillian.class)
 public class ListsControllerTest {
@@ -87,15 +89,6 @@ public class ListsControllerTest {
     
     @FindBy(id = "formAddNewList:link")
     private WebElement linkAddNewList;
-
-    @FindBy(id = "dataViewLists:0:formLists:linkSave")
-    private WebElement linkSave;
-
-    @FindBy(id = "dataViewLists:0:formLists:linkDelete")
-    private WebElement linkDelete;
-
-    @FindBy(id = "dataViewLists:0:formLists:buttonConfirmDeleteList")
-    private WebElement buttonConfirmDeleteList;
 
     public ListsControllerTest() {
         PageFactory.initElements(browser, this);
@@ -156,18 +149,21 @@ public class ListsControllerTest {
     }
 
     @Test @RunAsClient @InSequence(3)
-    public void creatingNewList() throws InterruptedException {
+    public void createAndDeleteList() throws InterruptedException {
         addListAndCheck("List 1", "First shopping list", 0);
-        deleteListAndCheck(0);
-        Thread.sleep(4000);
+        deleteList(0);
     }
 
-    private void deleteListAndCheck(int position) {
-        String outNameId = "dataViewLists:" + position + ":formLists:outName";
-        WebElement outputName = browser.findElement(By.id(outNameId));
-        linkDelete.click();
-        waitModel().until().element(buttonConfirmDeleteList).is().clickable();
-        buttonConfirmDeleteList.click();
+    @Test @RunAsClient @InSequence(4)
+    public void createThreeListsAndMoveThem() throws InterruptedException {
+        addListAndCheck("List 1", "First shopping list", 0);
+        addListAndCheck("List 2", "Second shopping list", 1);
+        addListAndCheck("List 3", "Third shopping list", 2);
+        String outputNameId = "dataViewLists:" + 0 + ":formLists:outName";
+        WebElement outputName = browser.findElement(By.id(outputNameId));
+        deleteList(0);
+        deleteList(0);
+        deleteList(0);
         waitModel().until().element(outputName).is().not().visible();
     }
 
@@ -180,6 +176,9 @@ public class ListsControllerTest {
         WebElement inputDesc = browser.findElement(By.id(inputDescId));
         inputName.sendKeys(name);
         inputDesc.sendKeys(desc);
+        
+        String linkSaveId = "dataViewLists:" + position + ":formLists:linkSave";
+        WebElement linkSave = browser.findElement(By.id(linkSaveId));
         linkSave.click();
 
         String outputNameId = "dataViewLists:" + position + ":formLists:outName";
@@ -191,5 +190,21 @@ public class ListsControllerTest {
         waitModel().until().element(outputDesc).text().contains(desc);
        
     }
+
+    private void deleteList(int position) throws InterruptedException {
+        String linkDeleteId = "dataViewLists:" + position + ":formLists:linkDelete";
+        WebElement linkDelete = browser.findElement(By.id(linkDeleteId));
+        linkDelete.click();
+
+        String buttonConfirmDeleteId = "dataViewLists:" + position + ":formLists:buttonConfirmDeleteList";
+       // Thread.sleep(2000);
+        System.err.println(browser.getPageSource());
+        waitModel().until(ExpectedConditions.visibilityOfElementLocated(By.id(buttonConfirmDeleteId)));
+        WebElement buttonConfirmDeleteList = browser.findElement(By.id(buttonConfirmDeleteId));
+
+        waitModel().until().element(buttonConfirmDeleteList).is().clickable();
+        guardAjax(buttonConfirmDeleteList).click();
+    }
+
 
 }

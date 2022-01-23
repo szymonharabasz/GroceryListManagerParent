@@ -98,18 +98,16 @@
                                             process="@all" update="@all"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkShare" value="Share list"/>
-                                <p:commandLink value="" id="linkDelete" onclick="PF('dlgDeleteList').show()">
+                                <p:commandLink value="" id="linkDelete" onclick="PF('dlgDeleteList#{list.id}').show()">
                                     <i class="pi pi-trash"/>
                                 </p:commandLink>
                                 <p:tooltip for="linkDelete" value="Delete list"/>
                             </div>
-                            <p:dialog header="Delete list?" widgetVar="dlgDeleteList" minHeight="40" width="400"
+                            <p:dialog header="Delete list?" widgetVar="dlgDeleteList#{list.id}" minHeight="40" width="480"
                                       showEffect="fade">
-                                <p class="p-m-0">
-                                    Are you sure you want to delete this list?
-                                </p>
+                                <h:outputText  class="p-m-0" value="Are you sure you want to delete the list ${list.name}?" />
                                 <f:facet name="footer">
-                                    <p:commandButton value="Cancel" onclick="PF('dlgDeleteList').hide()"
+                                    <p:commandButton value="Cancel" onclick="PF('dlgDeleteList#{list.id}').hide()"
                                                      styleClass="ui-button-flat p-mr-2">
                                     </p:commandButton>
                                     <p:commandButton id="buttonConfirmDeleteList" value="Delete" styleClass="ui-button-danger p-mr-2">
