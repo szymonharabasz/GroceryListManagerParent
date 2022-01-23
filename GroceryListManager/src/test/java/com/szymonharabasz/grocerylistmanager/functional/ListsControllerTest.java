@@ -30,7 +30,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.primefaces.component.themeswitcher.ThemeSwitcher;
 
 import java.io.File;
 import java.lang.Package;
@@ -161,6 +160,7 @@ public class ListsControllerTest {
         addListAndCheck("List 2", "Second shopping list", 1);
         addListAndCheck("List 3", "Third shopping list", 2);
         moveListUpAndCheck(2);
+        moveListUpAndCheck(0);
         Thread.sleep(3000);
         String outputNameId = "dataViewLists:" + 0 + ":formLists:outName";
         WebElement outputName = browser.findElement(By.id(outputNameId));

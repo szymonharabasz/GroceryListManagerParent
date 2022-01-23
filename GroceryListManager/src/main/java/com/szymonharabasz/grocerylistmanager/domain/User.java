@@ -130,7 +130,11 @@ public class User implements Serializable {
         System.err.println("Index of " + listId + " is " + index);
         if (index > 0) {
             System.err.println("Before swapping: " + listIds);
-            Collections.swap(listIds, index, index-1);
+            Stream<String> a = listIds.subList(0, index-1).stream();
+            Stream<String> b = Arrays.asList(listIds.get(index), listIds.get(index-1)).stream();
+            Stream<String> c = listIds.subList(index+1, listIds.size()).stream();
+            listIds = Stream.of(a, b, c).flatMap(s -> s).collect(Collectors.toList());
+           // Collections.swap(listIds, index, index-1);
             System.err.println("After swapping " + listIds);
         }
     }
@@ -138,7 +142,11 @@ public class User implements Serializable {
     public void moveListIdDown(String listId) {
         int index = listIds.indexOf(listId);
         if (index < listIds.size()-1) {
-            Collections.swap(listIds, index, index+1);
+           // Collections.swap(listIds, index, index+1);
+            Stream<String> a = listIds.subList(0, index).stream();
+            Stream<String> b = Arrays.asList(listIds.get(index+1), listIds.get(index)).stream();
+            Stream<String> c = listIds.subList(index+2, listIds.size()).stream();
+            listIds = Stream.of(a, b, c).flatMap(s -> s).collect(Collectors.toList());
         }
     }
 
