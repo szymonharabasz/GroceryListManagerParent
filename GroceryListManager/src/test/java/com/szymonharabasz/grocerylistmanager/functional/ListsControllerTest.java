@@ -161,7 +161,9 @@ public class ListsControllerTest {
         addListAndCheck("List 3", "Third shopping list", 2);
         moveListUpAndCheck(2);
         moveListUpAndCheck(0);
-        Thread.sleep(3000);
+        moveListDownAndCheck(0, 3);
+        moveListDownAndCheck(2, 3);
+       // Thread.sleep(3000);
         String outputNameId = "dataViewLists:" + 0 + ":formLists:outName";
         WebElement outputName = browser.findElement(By.id(outputNameId));
         deleteList(0);
@@ -220,6 +222,23 @@ public class ListsControllerTest {
 
         String newOutputNameId = (initialPosition > 0) ? 
             "dataViewLists:" + (initialPosition - 1) + ":formLists:outName" :
+            "dataViewLists:" + initialPosition + ":formLists:outName";
+        
+        WebElement newOutputName = browser.findElement(By.id(newOutputNameId));
+        waitAjax().until().element(newOutputName).text().contains(listName);
+    }
+
+    private void moveListDownAndCheck(int initialPosition, int size) {
+        String moveListUpLinkId = "dataViewLists:" + initialPosition + ":formLists:linkDown";
+        String outputNameId = "dataViewLists:" + initialPosition + ":formLists:outName";
+        WebElement outputName = browser.findElement(By.id(outputNameId));
+        String listName = outputName.getText();
+
+        WebElement linkMoveListUp = browser.findElement(By.id(moveListUpLinkId));
+        guardAjax(linkMoveListUp).click();
+
+        String newOutputNameId = (initialPosition < size - 1) ? 
+            "dataViewLists:" + (initialPosition + 1) + ":formLists:outName" :
             "dataViewLists:" + initialPosition + ":formLists:outName";
         
         WebElement newOutputName = browser.findElement(By.id(newOutputNameId));
