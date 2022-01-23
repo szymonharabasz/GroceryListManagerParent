@@ -118,28 +118,28 @@
                             </p:dialog>
                         </div>
                         <div>
-                            <p:dataView value="#{list.items}" var="item" rendered="#{list.expanded}">
+                            <p:dataView id="dataViewItems" value="#{list.items}" var="item" rendered="#{list.expanded}">
                                 <p:dataViewListItem>
                                     <div class="ui-g-12">
                                         <div class="ui-g-1">
-                                            <p:selectBooleanCheckbox value="#{item.done}">
+                                            <p:selectBooleanCheckbox id="chkItemDome" value="#{item.done}">
                                                 <p:ajax listener="#{listsController.toggleDone(item.id, list.id)}"
                                                         process="@all" update="@all"/>
                                             </p:selectBooleanCheckbox>
                                         </div>
                                         <div class="ui-g-5">
-                                            <h:outputText value="#{item.name}" rendered="#{!item.edited}"/>
-                                            <p:inputText styleClass="ui-g-12" value="#{item.name}"
+                                            <h:outputText id="outItemName" value="#{item.name}" rendered="#{!item.edited}"/>
+                                            <p:inputText id="inItemName" styleClass="ui-g-12" value="#{item.name}"
                                                          rendered="#{item.edited}"/>
                                         </div>
                                         <div class="ui-g-1">
-                                            <h:outputText value="#{item.quantity}" rendered="#{!item.edited}"/>
-                                            <p:inputText styleClass="ui-g-12" value="#{item.quantity}"
+                                            <h:outputText id="outItemQuantity" value="#{item.quantity}" rendered="#{!item.edited}"/>
+                                            <p:inputText id="inItemQuantity" styleClass="ui-g-12" value="#{item.quantity}"
                                                          rendered="#{item.edited}"/>
                                         </div>
                                         <div class="ui-g-1">
-                                            <h:outputText value="#{item.unit}" rendered="#{!item.edited}"/>
-                                            <p:inputText styleClass="ui-g-12" value="#{item.unit}"
+                                            <h:outputText id="outItemUnit" value="#{item.unit}" rendered="#{!item.edited}"/>
+                                            <p:inputText id="inItemUnit" styleClass="ui-g-12" value="#{item.unit}"
                                                          rendered="#{item.edited}"/>
                                         </div>
                                         <div class="ui-g-3 ui-g-offset-1" style="text-align: right">
@@ -196,7 +196,7 @@
                                     </div>
                                 </p:dataViewListItem>
                             </p:dataView>
-                            <p:commandLink value="Add new item" rendered="#{list.expanded}">
+                            <p:commandLink id="linkAddNewItem" value="Add new item" rendered="#{list.expanded}">
                                 <p:ajax event="click" listener="#{listsController.addItem(list.id)}" process="@all"
                                         update="@all"/>
                             </p:commandLink>

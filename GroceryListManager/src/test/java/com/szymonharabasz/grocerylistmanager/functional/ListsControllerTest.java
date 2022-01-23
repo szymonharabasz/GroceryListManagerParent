@@ -149,13 +149,13 @@ public class ListsControllerTest {
     }
 
     @Test @RunAsClient @InSequence(3)
-    public void createAndDeleteList() throws InterruptedException {
+    public void createAndDeleteList() {
         addListAndCheck("List 1", "First shopping list", 0);
         deleteList(0);
     }
 
     @Test @RunAsClient @InSequence(4)
-    public void createThreeListsAndMoveThem() throws InterruptedException {
+    public void createThreeListsMoveAndDeleteThem() {
         addListAndCheck("List 1", "First shopping list", 0);
         addListAndCheck("List 2", "Second shopping list", 1);
         addListAndCheck("List 3", "Third shopping list", 2);
@@ -163,7 +163,6 @@ public class ListsControllerTest {
         moveListUpAndCheck(0);
         moveListDownAndCheck(0, 3);
         moveListDownAndCheck(2, 3);
-       // Thread.sleep(3000);
         String outputNameId = "dataViewLists:" + 0 + ":formLists:outName";
         WebElement outputName = browser.findElement(By.id(outputNameId));
         deleteList(0);
@@ -172,7 +171,45 @@ public class ListsControllerTest {
         waitModel().until().element(outputName).is().not().visible();
     }
 
-    private void addListAndCheck(String name, String desc, int position) throws InterruptedException {
+    @Test @RunAsClient @InSequence(5)
+    public void createListWithItems() {
+        addListAndCheck("List 1", "First shopping list", 0);
+        addItemAndCheck("Item 1", "10", "GeV", 0, 0);
+        addItemAndCheck("Item 2", "2.3", "kg", 0, 1);
+        addItemAndCheck("Mleka", "5", "deka", 0, 2);
+        deleteList(0);
+    }
+
+    private void addItemAndCheck(String name, String quantity, String unit, int listPosition, int itemPosition) {
+        String linkAddNewItemId = "dataViewLists:" + listPosition + ":formLists:linkAddNewItem";
+        WebElement linkAddNewItem = browser.findElement(By.id(linkAddNewItemId));
+        guardAjax(linkAddNewItem).click();
+        System.err.println(browser.getPageSource());
+
+        String inputItemNameId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":inItemName";
+        WebElement inputItemName = browser.findElement(By.id(inputItemNameId));
+        inputItemName.sendKeys(name);
+
+        String inputItemQuantityId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":inItemQuantity";
+        WebElement inputItemQuantity = browser.findElement(By.id(inputItemQuantityId));
+        inputItemQuantity.sendKeys(quantity);
+
+        String inputItemUnitId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":inItemUnit";
+        WebElement inputItemUnit = browser.findElement(By.id(inputItemUnitId));
+        inputItemUnit.sendKeys(unit);
+
+        String linkItemSaveId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":linkSaveItem";
+        WebElement linkItemSave = browser.findElement(By.id(linkItemSaveId));
+        guardAjax(linkItemSave).click();
+
+        String outputItemNameId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":outItemName";
+        WebElement outputItemName = browser.findElement(By.id(outputItemNameId));
+        waitAjax().until().element(outputItemName).text().contains(name);
+
+
+    }
+
+    private void addListAndCheck(String name, String desc, int position) {
         linkAddNewList.click();
         String inputNameId = "dataViewLists:" + position + ":formLists:inName";
         String inputDescId = "dataViewLists:" + position + ":formLists:inDesc";
@@ -193,17 +230,14 @@ public class ListsControllerTest {
         WebElement outputDesc = browser.findElement(By.id(outputDescId));
         waitModel().until().element(outputName).text().contains(name);
         waitModel().until().element(outputDesc).text().contains(desc);
-       
     }
 
-    private void deleteList(int position) throws InterruptedException {
+    private void deleteList(int position) {
         String linkDeleteId = "dataViewLists:" + position + ":formLists:linkDelete";
         WebElement linkDelete = browser.findElement(By.id(linkDeleteId));
         linkDelete.click();
 
         String buttonConfirmDeleteId = "dataViewLists:" + position + ":formLists:buttonConfirmDeleteList";
-       // Thread.sleep(2000);
-        System.err.println(browser.getPageSource());
         waitModel().until(ExpectedConditions.visibilityOfElementLocated(By.id(buttonConfirmDeleteId)));
         WebElement buttonConfirmDeleteList = browser.findElement(By.id(buttonConfirmDeleteId));
 
