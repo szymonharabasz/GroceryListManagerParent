@@ -24,10 +24,12 @@ import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.File;
 import java.lang.Package;
@@ -85,18 +87,6 @@ public class ListsControllerTest {
     
     @FindBy(id = "formAddNewList:link")
     private WebElement linkAddNewList;
-
-    @FindBy(id = "dataViewLists:0:formLists:inName")
-    private WebElement inputName;
-
-    @FindBy(id = "dataViewLists:0:formLists:inDesc")
-    private WebElement inputDesc;
-
-    @FindBy(id = "dataViewLists:0:formLists:outName")
-    private WebElement outputName;
-
-    @FindBy(id = "dataViewLists:0:formLists:outDesc")
-    private WebElement outputDesc;
 
     @FindBy(id = "dataViewLists:0:formLists:linkSave")
     private WebElement linkSave;
@@ -167,17 +157,41 @@ public class ListsControllerTest {
 
     @Test @RunAsClient @InSequence(3)
     public void creatingNewList() throws InterruptedException {
-        linkAddNewList.click();
-        waitModel().until().element(inputName).is().visible();
-        inputName.sendKeys("List 1");
-        inputDesc.sendKeys("First shopping list");
-        linkSave.click();
-        waitModel().until().element(outputName).text().contains("List 1");
-        waitModel().until().element(outputDesc).text().contains("First shopping list");
+        // linkAddNewList.click();
+        // waitModel().until().element(inputName).is().visible();
+        // inputName.sendKeys("List 1");
+        // inputDesc.sendKeys("First shopping list");
+        // linkSave.click();
+        // waitModel().until().element(outputName).text().contains("List 1");
+        // waitModel().until().element(outputDesc).text().contains("First shopping list");
+        addListAndCheck("List 1", "First shopping list", 0);
+        WebElement outputName = browser.findElement(By.id("dataViewLists:" + 0 + ":formLists:outName"));
         linkDelete.click();
         waitModel().until().element(buttonConfirmDeleteList).is().clickable();
         buttonConfirmDeleteList.click();
         waitModel().until().element(outputName).is().not().visible();
+        Thread.sleep(4000);
+    }
+
+    private void addListAndCheck(String name, String desc, int position) throws InterruptedException {
+        linkAddNewList.click();
+        String inputNameId = "dataViewLists:" + position + ":formLists:inName";
+        String inputDescId = "dataViewLists:" + position + ":formLists:inDesc";
+        waitModel().until(ExpectedConditions.visibilityOfElementLocated(By.id(inputNameId)));
+        WebElement inputName = browser.findElement(By.id(inputNameId));
+        WebElement inputDesc = browser.findElement(By.id(inputDescId));
+        inputName.sendKeys(name);
+        inputDesc.sendKeys(desc);
+        linkSave.click();
+
+        String outputNameId = "dataViewLists:" + position + ":formLists:outName";
+        String outputDescId = "dataViewLists:" + position + ":formLists:outDesc";
+        waitModel().until(ExpectedConditions.visibilityOfElementLocated(By.id(outputNameId)));
+        WebElement outputName = browser.findElement(By.id(outputNameId));
+        WebElement outputDesc = browser.findElement(By.id(outputDescId));
+        waitModel().until().element(outputName).text().contains(name);
+        waitModel().until().element(outputDesc).text().contains(desc);
+       
     }
 
 }

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.base.Objects;
+
 @Entity("User")
 public class User implements Serializable {
     @Id
@@ -55,7 +57,12 @@ public class User implements Serializable {
     }
 
     public void removeListId(String id) {
-        listIds.remove(id);
+       // listIds.remove(id);
+        System.err.println("ID TO DELETE " + id);
+        System.err.println("BEFORE DELETING " + listIds);
+        listIds = listIds.stream().filter(listId -> !Objects.equal(listId, id))
+            .collect(Collectors.toList());
+        System.err.println("AFTER DELETING " + listIds);
     }
 
     public boolean hasListId(String id) {

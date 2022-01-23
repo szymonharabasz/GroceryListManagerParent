@@ -191,6 +191,10 @@ public class ListsController implements Serializable {
     }
 
     public void removeList(String id) {
+        currenUser().ifPresent(user -> {
+            user.removeListId(id);
+            userService.save(user);
+        });
         listsService.removeList(id);
         fetchLists();
     }
@@ -215,12 +219,8 @@ public class ListsController implements Serializable {
     }
 
     public void removeItem(String id) {
-        currenUser().ifPresent(user -> {
-            user.removeListId(id);
-            userService.save(user);
-            listsService.removeItem(id);
-            fetchLists();
-        });
+        listsService.removeItem(id);
+        fetchLists();
     }
 
     public void addList() {
