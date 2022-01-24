@@ -177,6 +177,12 @@ public class ListsControllerTest {
         addItemAndCheck("Item 1", "10", "GeV", 0, 0);
         addItemAndCheck("Item 2", "2.3", "kg", 0, 1);
         addItemAndCheck("Mleka", "5", "deka", 0, 2);
+        String outputItemNameId = "dataViewLists:" + 0 + ":formLists:dataViewItems:" + 0 + ":outItemName";
+        WebElement outputItemName = browser.findElement(By.id(outputItemNameId));
+        deleteItem(0, 0);
+        deleteItem(0, 0);
+        deleteItem(0, 0);
+        waitModel().until().element(outputItemName).is().not().visible();
         deleteList(0);
     }
 
@@ -205,10 +211,21 @@ public class ListsControllerTest {
         String outputItemNameId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":outItemName";
         WebElement outputItemName = browser.findElement(By.id(outputItemNameId));
         waitAjax().until().element(outputItemName).text().contains(name);
-
-
     }
 
+    private void deleteItem(int listPosition, int itemPosition) {
+        String linkItemDeleteId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":linkDeleteItem"; 
+        WebElement linkItemDelete = browser.findElement(By.id(linkItemDeleteId));
+        guardAjax(linkItemDelete).click();
+
+        String buttonConfirmItemDeleteId = "dataViewLists:" + listPosition + ":formLists:dataViewItems:" + itemPosition + ":buttonConfirmDeleteItem"; 
+        waitModel().until(ExpectedConditions.visibilityOfElementLocated(By.id(buttonConfirmItemDeleteId)));
+        WebElement buttonConfirmItemDelete = browser.findElement(By.id(buttonConfirmItemDeleteId));
+
+        waitModel().until().element(buttonConfirmItemDelete).is().clickable();
+        guardAjax(buttonConfirmItemDelete).click();
+    }
+    
     private void addListAndCheck(String name, String desc, int position) {
         linkAddNewList.click();
         String inputNameId = "dataViewLists:" + position + ":formLists:inName";

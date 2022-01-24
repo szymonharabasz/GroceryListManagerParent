@@ -172,21 +172,19 @@
                                             </p:commandLink>
                                             <p:tooltip for="linkSaveItem" value="Save item"/>
                                             <p:commandLink value="" id="linkDeleteItem"
-                                                           onclick="PF('dlgDeleteItem').show()">
+                                                           onclick="PF('dlgDeleteItem#{item.id}').show()">
                                                 <i class="pi pi-trash"/>
                                             </p:commandLink>
                                             <p:tooltip for="linkDeleteItem" value="Delete item"/>
                                         </div>
-                                        <p:dialog header="Delete item?" widgetVar="dlgDeleteItem" minHeight="40"
+                                        <p:dialog header="Delete item?" widgetVar="dlgDeleteItem#{item.id}" minHeight="40"
                                                   width="400" showEffect="fade">
-                                            <p class="p-m-0">
-                                                Are you sure you want to delete this item?
-                                            </p>
+                                            <h:outputText class="p-m-0" value="Are you sure you want to delete the item #{item.name}?" />
                                             <f:facet name="footer">
-                                                <p:commandButton value="Cancel" onclick="PF('dlgDeleteItem').hide()"
+                                                <p:commandButton value="Cancel" onclick="PF('dlgDeleteItem#{item.id}').hide()"
                                                                  styleClass="ui-button-flat p-mr-2">
                                                 </p:commandButton>
-                                                <p:commandButton value="Delete" styleClass="ui-button-danger p-mr-2">
+                                                <p:commandButton id="buttonConfirmDeleteItem" value="Delete" styleClass="ui-button-danger p-mr-2">
                                                     <p:ajax event="click"
                                                             listener="#{listsController.removeItem(item.id)}"
                                                             process="@all" update="@all"/>

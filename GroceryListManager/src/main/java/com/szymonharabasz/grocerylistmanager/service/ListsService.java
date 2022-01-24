@@ -68,11 +68,14 @@ public class ListsService {
     }
 
     public void removeItem(String id) {
+        System.err.println("NUMBER OF LISTS: " + repository.findAll().size());
         for (GroceryList list : repository.findAll()) {
+            System.err.println("BEFORE REMOVING ITEM OF ID " + id + ": " + list.getItems());
             list.setItems(
                     list.getItems().stream().filter(item ->
                             !Objects.equals(item.getId(), id)).collect(Collectors.toList())
             );
+            System.err.println("AFTER REMOVING ITEM OF ID " + id + ": " + list.getItems());
             saveList(list);
         }
     }
